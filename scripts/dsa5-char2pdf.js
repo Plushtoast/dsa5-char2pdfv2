@@ -78,7 +78,6 @@ Hooks.on("getActorDirectoryEntryContext", (html, entryOptions) => {
       icon: '<i class="fas fa-tasks"></i>',
       condition: li => {
         const entity = ActorDirectory.collection.get(li.data("documentId"));
-        console.log(ActorDirectory.collection)
         //check for the right DSA5 template and for the right type
         if (entity.type == "character" || entity.sheet == "ActorSheetdsa5Character") 
         {  
@@ -319,6 +318,71 @@ async function fillForm(_dsa_actor_id) {
   form.getTextField('KO_1').setText(p_ko+'')
   form.getTextField('KK_1').setText(p_kk+'')
 
+  /** calculated mods */
+  form.getTextField('EW_Mod_MU').setText(p_mu+'')
+  form.getTextField('EW_Mod_p1_MU').setText(p_mu+1+'')
+  form.getTextField('EW_Mod_p2_MU').setText(p_mu+2+'')
+  form.getTextField('EW_Mod_p3_MU').setText(p_mu+3+'')
+  form.getTextField('EW_Mod_m1_MU').setText(p_mu-1+'')
+  form.getTextField('EW_Mod_m2_MU').setText(p_mu-2+'')
+  form.getTextField('EW_Mod_m3_MU').setText(p_mu-3+'')
+
+  form.getTextField('EW_Mod_KL').setText(p_kl+'')
+  form.getTextField('EW_Mod_p1_KL').setText(p_kl+1+'')
+  form.getTextField('EW_Mod_p2_KL').setText(p_kl+2+'')
+  form.getTextField('EW_Mod_p3_KL').setText(p_kl+3+'')
+  form.getTextField('EW_Mod_m1_KL').setText(p_kl-1+'')
+  form.getTextField('EW_Mod_m2_KL').setText(p_kl-2+'')
+  form.getTextField('EW_Mod_m3_KL').setText(p_kl-3+'')
+
+  form.getTextField('EW_Mod_IN').setText(p_in+'')
+  form.getTextField('EW_Mod_p1_IN').setText(p_in+1+'')
+  form.getTextField('EW_Mod_p2_IN').setText(p_in+2+'')
+  form.getTextField('EW_Mod_p3_IN').setText(p_in+3+'')
+  form.getTextField('EW_Mod_m1_IN').setText(p_in-1+'')
+  form.getTextField('EW_Mod_m2_IN').setText(p_in-2+'')
+  form.getTextField('EW_Mod_m3_IN').setText(p_in-3+'')
+
+  form.getTextField('EW_Mod_CH').setText(p_ch+'')
+  form.getTextField('EW_Mod_p1_CH').setText(p_ch+1+'')
+  form.getTextField('EW_Mod_p2_CH').setText(p_ch+2+'')
+  form.getTextField('EW_Mod_p3_CH').setText(p_ch+3+'')
+  form.getTextField('EW_Mod_m1_CH').setText(p_ch-1+'')
+  form.getTextField('EW_Mod_m2_CH').setText(p_ch-2+'')
+  form.getTextField('EW_Mod_m3_CH').setText(p_ch-3+'')
+
+  form.getTextField('EW_Mod_FF').setText(p_ff+'')
+  form.getTextField('EW_Mod_p1_FF').setText(p_ff+1+'')
+  form.getTextField('EW_Mod_p2_FF').setText(p_ff+2+'')
+  form.getTextField('EW_Mod_p3_FF').setText(p_ff+3+'')
+  form.getTextField('EW_Mod_m1_FF').setText(p_ff-1+'')
+  form.getTextField('EW_Mod_m2_FF').setText(p_ff-2+'')
+  form.getTextField('EW_Mod_m3_FF').setText(p_ff-3+'')
+
+  form.getTextField('EW_Mod_GE').setText(p_ge+'')
+  form.getTextField('EW_Mod_p1_GE').setText(p_ge+1+'')
+  form.getTextField('EW_Mod_p2_GE').setText(p_ge+2+'')
+  form.getTextField('EW_Mod_p3_GE').setText(p_ge+3+'')
+  form.getTextField('EW_Mod_m1_GE').setText(p_ge-1+'')
+  form.getTextField('EW_Mod_m2_GE').setText(p_ge-2+'')
+  form.getTextField('EW_Mod_m3_GE').setText(p_ge-3+'')
+
+  form.getTextField('EW_Mod_KO').setText(p_ko+'')
+  form.getTextField('EW_Mod_p1_KO').setText(p_ko+1+'')
+  form.getTextField('EW_Mod_p2_KO').setText(p_ko+2+'')
+  form.getTextField('EW_Mod_p3_KO').setText(p_ko+3+'')
+  form.getTextField('EW_Mod_m1_KO').setText(p_ko-1+'')
+  form.getTextField('EW_Mod_m2_KO').setText(p_ko-2+'')
+  form.getTextField('EW_Mod_m3_KO').setText(p_ko-3+'')
+
+  form.getTextField('EW_Mod_KK').setText(p_kk+'')
+  form.getTextField('EW_Mod_p1_KK').setText(p_kk+1+'')
+  form.getTextField('EW_Mod_p2_KK').setText(p_kk+2+'')
+  form.getTextField('EW_Mod_p3_KK').setText(p_kk+3+'')
+  form.getTextField('EW_Mod_m1_KK').setText(p_kk-1+'')
+  form.getTextField('EW_Mod_m2_KK').setText(p_kk-2+'')
+  form.getTextField('EW_Mod_m3_KK').setText(p_kk-3+'')
+
   /** disadvantages */
 
     const disadvantage = map.filter(value => value.type === "disadvantage");
@@ -417,6 +481,12 @@ async function fillForm(_dsa_actor_id) {
     case "EXP.masterful":
       exp_translate="Meisterlich"
       break;
+    case "EXP.brillant":
+      exp_translate="Brilliant"
+      break;
+    case "EXP.legendary":
+      exp_translate="Legendär"
+      break;
     default:
     break;
   };
@@ -506,8 +576,29 @@ async function fillForm(_dsa_actor_id) {
 
   var temp = Array.from(name.values(), value => value.data.data.talentValue.value)
   form.getTextField("Talent_FW_"+destination).setText(temp+'')
+
+
+  let e_1_name = Array.from(name.values(), value => value.data.data.characteristic1.value)[0]
+  let e_2_name = Array.from(name.values(), value => value.data.data.characteristic1.value)[0]
+  let e_3_name = Array.from(name.values(), value => value.data.data.characteristic1.value)[0]
+  let e_1_value =  entity.data.data.characteristics[e_1_name].value
+  let e_2_value =  entity.data.data.characteristics[e_2_name].value
+  let e_3_value =  entity.data.data.characteristics[e_3_name].value
+
+  let routine = ""
+  if (e_1_value>=13 && e_2_value>=13 && e_3_value>=13){
+      if (temp[0]>=1 && temp[0]<4){ routine = "+3"}
+      else if (temp[0]>=4 && temp[0]<7){ routine = "+2"}
+      else if (temp[0]>=7 && temp[0]<10){ routine = "+1"}
+      else if (temp[0]>=10 && temp[0]<13){ routine = "0"}
+      else if (temp[0]>=13 && temp[0]<16){ routine = "-1"}
+      else if (temp[0]>=16 && temp[0]<19){ routine = "-2"}
+      else if (temp[0]>=19){ routine = "-3"}
   }
 
+
+  form.getTextField("Talent_R_"+destination).setText(routine+'')
+}
   /** Combat */
   /** general */
 
@@ -546,7 +637,7 @@ async function fillForm(_dsa_actor_id) {
   form.getTextField("KT_FW_"+destination).setText(temp1+'')
 
   var temp2 = Array.from(name.values(), value => value.data.data.attack.value)
-  form.getTextField("KT_AT_"+destination).setText(Number(temp2)+Number(at_fk_modifier)+'')
+  form.getTextField("KT_AT_"+destination).setText(Number(temp1)+Number(at_fk_modifier)+'')
 
   if (pa === 1){
   var max_LW_bonus = Math.floor(((Math.max.apply(Math, Leitwert))-8)/3) /** calculation Leitwert bonus  */
@@ -758,8 +849,8 @@ async function fillForm(_dsa_actor_id) {
   /** Cleric */
   /** liturgy */
   const combat_liturgy = map
-  .filter(value => value.type === "liturgy")
-  var arrayLength = combat_liturgy.length;    
+  .filter(value => (value.type === "liturgy" || value.type === "ceremony"))
+  var arrayLength = combat_liturgy.length;
     if (arrayLength > 40) {
       arrayLength = 40 
       ui.notifications.warn("You have more than 40 liturgys! The template can only hold a maximum of 40");
