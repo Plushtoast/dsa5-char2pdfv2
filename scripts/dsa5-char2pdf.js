@@ -359,10 +359,14 @@ async function fillForm(_dsa_actor_id) {
 
   /** life / wounds */
 
-  form.getTextField('LE_Max_1').setText(entity.system.status.wounds.max+'')
+  const baseLE = entity.system.status.wounds.max
+  const actualLE = entity.system.status.wounds.value
+  form.getTextField('LE_Max_1').setText(String(baseLE))
   form.getTextField('LE_Max_3').setText(entity.system.status.wounds.max+'')
   form.getTextField('LE_Wert_1').setText(entity.system.status.wounds.current+'')
-  form.getTextField('LE_Aktuell_1').setText(entity.system.status.wounds.current+'')
+  if (baseLE !== actualLE) {
+    form.getTextField('LE_Aktuell_1').setText(String(actualLE))
+  }
   form.getTextField('LE_Kauf_1').setText(entity.system.status.wounds.advances+'')
   form.getTextField('LE_BM_1').setText(entity.system.status.wounds.modifier+'')
 
@@ -386,17 +390,29 @@ async function fillForm(_dsa_actor_id) {
 
   /** astralenergy */ 
 
-  form.getTextField('AE_Max_1').setText(entity.system.status.astralenergy.max+'')
-  form.getTextField('AE_Wert_1').setText(entity.system.status.astralenergy.current+'')
-  form.getTextField('AE_Kauf_1').setText(entity.system.status.astralenergy.advances+'')
-  form.getTextField('AE_BM_1').setText(entity.system.status.astralenergy.modifier+'')
+  const baseAE = entity.system.status.astralenergy.max
+  const currentAE = entity.system.status.astralenergy.current
+  const actualAE = entity.system.status.astralenergy.value
+  const advAE = entity.system.status.astralenergy.advances
+  const modAE = entity.system.status.astralenergy.modifier
+  form.getTextField('AE_Max_1').setText(String(baseAE))
+  /* Property "current" is only the "Leiteigenschaft" without the 20AsP basis */
+  form.getTextField('AE_Wert_1').setText(String(currentAE + 20))
+  form.getTextField('AE_Kauf_1').setText(String(advAE))
+  form.getTextField('AE_BM_1').setText(String(modAE))
 
   /** karmaenergy */ 
 
-  form.getTextField('KE_Max_1').setText(entity.system.status.karmaenergy.max+'')
-  form.getTextField('KE_Wert_1').setText(entity.system.status.karmaenergy.current+'')
-  form.getTextField('KE_Kauf_1').setText(entity.system.status.karmaenergy.advances+'')
-  form.getTextField('KE_BM_1').setText(entity.system.status.karmaenergy.modifier+'')
+  const baseKE = entity.system.status.karmaenergy.max
+  const currentKE = entity.system.status.karmaenergy.current
+  const actualKE = entity.system.status.karmaenergy.value
+  const advKE = entity.system.status.karmaenergy.advances
+  const modKE = entity.system.status.karmaenergy.modifier
+  form.getTextField('KE_Max_1').setText(String(baseKE))
+  /* Property "current" ia only the "Leiteigenschaft" withoud the 20KsP basis */
+  form.getTextField('KE_Wert_1').setText(String(currentKE + 20))
+  form.getTextField('KE_Kauf_1').setText(String(advKE))
+  form.getTextField('KE_BM_1').setText(String(modKE))
 
   /** experience */ 
 
@@ -428,9 +444,13 @@ async function fillForm(_dsa_actor_id) {
 
   /** fatepoints */ 
 
-  form.getTextField('SchiP_Wert_1').setText(entity.system.status.fatePoints.value+'')
+  const base = entity.system.status.fatePoints.current;
+  const actual = entity.system.status.fatePoints.value;
+  form.getTextField('SchiP_Wert_1').setText(String(base))
   form.getTextField('SchiP_Max_1').setText(entity.system.status.fatePoints.max+'')
-  form.getTextField('SchiP_Aktuell_1').setText(entity.system.status.fatePoints.current+'')
+  if (base !== actual) {
+    form.getTextField('SchiP_Aktuell_1').setText(entity.system.status.fatePoints.value+'')
+  }
   form.getTextField('SchiP_BM_1').setText(entity.system.status.fatePoints.modifier+'')
 
   /** talents */ 
@@ -734,8 +754,10 @@ async function fillForm(_dsa_actor_id) {
       (form.getTextField('Z_Seite_'+(i+1))).setText((''));
     }
 
-    form.getTextField('AE_Max_2').setText(entity.system.status.astralenergy.max+'')
-    form.getTextField('AE_Aktuell').setText(entity.system.status.astralenergy.current+'')
+    form.getTextField('AE_Max_2').setText(String(baseAE))
+    if (baseAE !== actualAE) {
+      form.getTextField('AE_Aktuell').setText(String(actualAE))
+    }
     form.getTextField('Held_Tradition_magisch').setText(entity.system.tradition.magical+'')
     form.getTextField('Leit_Magie_Ansicht').setText(Leitwert_long(entity.system.guidevalue.magical)+'')
     form.getTextField('Held_Merkmale').setText(Leitwert_long(entity.system.feature.magical)+'')
@@ -778,8 +800,10 @@ async function fillForm(_dsa_actor_id) {
       (form.getTextField('L_Seite_'+(i+1))).setText((''));
     }
 
-    form.getTextField('KE_Max_2').setText(entity.system.status.karmaenergy.max+'')
-    form.getTextField('KE_Aktuell').setText(entity.system.status.karmaenergy.current+'')
+    form.getTextField('KE_Max_2').setText(String(baseKE))
+    if (baseKE !== actualKE) {
+        form.getTextField('KE_Aktuell').setText(String(actualKE))
+    }
     form.getTextField('Held_Tradition_klerikal').setText(entity.system.tradition.clerical+'')
     form.getTextField('Leit_Karma_Anzeige').setText(Leitwert_long(entity.system.guidevalue.clerical)+'')
     form.getTextField('Held_Aspekt').setText(Leitwert_long(entity.system.feature.clerical)+'')
