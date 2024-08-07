@@ -15,9 +15,10 @@ See https://foundryvtt.wiki/en/basics/Modules.
 
 ### Manual Installation
 If the above installation doesn't work you can try doing it manually.
-1. Download the latest [release](https://github.com/JWinsen/DSA5-Foundry-VTT-Char2PDF/releases)
-2. Unzip the file into a folder named `dsa5-char2pdf` (*"Extract to dsa5-char2pdf"*)
-3. Place the folder `dsa5-char2pdf` in `AppData/Local/FoundryVTT/Data/modules/` folder.
+Use this manifest link:
+```
+[dsa5-char2pdf](https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdf/main/module.json)
+```
 
 ### Completion of the installation
 As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` for your World, then enable the `DSA5 - Char2PDF` module.
