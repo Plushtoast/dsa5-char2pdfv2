@@ -9,7 +9,7 @@
   ],
   "license": "MIT LICENSE",
   "flags": {},
-  "version": "v0.6.3",
+  "version": "0.6.3",
   "relationships": {
     "systems": [
       {
@@ -34,7 +34,7 @@
     "./lib/pdf-lib.js"
   ], 
   "url": "https://github.com/Plushtoast/dsa5-char2pdf",
-  "manifest": "https://github.com/Plushtoast/dsa5-char2pdf/releases/latest/download/module.json",
-  "download": "https://github.com/Plushtoast/dsa5-char2pdf/releases/download/v0.6.3/module.zip",
+  "manifest": "https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdf/master/module.json",
+  "download": "https://github.com/Plushtoast/dsa5-glueandhammer/releases/download/0.6.3/dsa5-glueandhammer-0.6.3.zip",
   "bugs": "https://github.com/Plushtoast/dsa5-char2pdf/issues/new/choose"
 }
