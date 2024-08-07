@@ -17,7 +17,7 @@ See https://foundryvtt.wiki/en/basics/Modules.
 If the above installation doesn't work you can try doing it manually.
 Use this manifest link:
 ```
-[dsa5-char2pdf](https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdf/main/module.json)
+https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdf/main/module.json
 ```
 
 ### Completion of the installation
