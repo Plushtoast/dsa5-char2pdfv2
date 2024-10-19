@@ -1,4 +1,11 @@
-![Version](https://img.shields.io/github/v/tag/JWinsen/DSA5-Foundry-VTT-Char2PDF?label=Version&style=flat-square&color=2577a1) ![Latest Release Download Count](https://img.shields.io/github/downloads/JWinsen/DSA5-Foundry-VTT-Char2PDF/latest/module.zip?label=Downloads&style=flat-square&color=9b43a8) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FJWinsen%2FDSA5-Foundry-VTT-Char2PDF%2Fmain%2Fmodule.json&label=Foundry%20Core%20Compatible%20Version&query=$.compatibleCoreVersion&style=flat-square&color=ff6400)
+![Version](https://img.shields.io/github/v/tag/Plushtoast/dsa5-char2pdf?label=Version&style=flat-square&color=2577a1) ![Latest Release Download Count](https://img.shields.io/github/downloads/Plushtoast/dsa5-char2pdf/latest/module.zip?label=Downloads&style=flat-square&color=9b43a8) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FPlushtoast%2Fdsa5-char2pdf%2Fmain%2Fmodule.json&label=Foundry%20Core%20Compatible%20Version&query=$.compatibility.verified&style=flat-square&color=ff6400)
+
+> [!IMPORTANT]  
+>  
+> This module displaces JWinsens original [DSA5-Foundry-VTT-Char2PDF](https://github.com/JWinsen/DSA5-Foundry-VTT-Char2PDF)
+> Many thanks to his effort in creating the module!
+
+<hr>
 
 # DSA5-Foundry-VTT-Char2PDF
 *Foundry VTT module to transfer the DSA 5 actors to PDF*
@@ -10,7 +17,7 @@ This module is to extend the functionality of the [Foundry VTT](https://foundryv
 See https://foundryvtt.wiki/en/basics/Modules. 
 
 1. Open the Add-on Modules tab in the Configuration and Setup dialog.
-2. Click Install Module, paste --> `https://github.com/JWinsen/DSA5-Foundry-VTT-Char2PDF/releases/latest/download/module.json`
+2. Click Install Module, paste --> `https://github.com/Plushtoast/dsa5-char2pdf/releases/latest/download/module.json`
    in as the Manifest URL, then click Install.
 
 ### Manual Installation
@@ -25,9 +32,9 @@ As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` f
 
 ## Where to find the button for export ? 
 
-![alt text](https://github.com/JWinsen/DSA5-Foundry-VTT-Char2PDF/blob/main/Where_to_find_the_Button.png?raw=true)
+![alt text](https://github.com/Plushtoast/dsa5-char2pdf/blob/main/Where_to_find_the_Button.png?raw=true)
 
-Please be aware. This context menue entry will only appear for actors which have been created with the template `DSA5.ActorSheetdsa5Character` and as `character` type. 
+Please be aware. This context menu entry will only appear for actors which have been created with the template `DSA5.ActorSheetdsa5Character` and as `character` type. 
 Other templates and types are not recognized. 
 
 ## Used librarys: 

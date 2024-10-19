@@ -5,11 +5,15 @@
   "authors": [
     {
       "name": "JWinsen"
+    },
+    {
+      "name": "Plushtoast"
     }
   ],
   "license": "MIT LICENSE",
   "flags": {},
-  "version": "0.6.5",
+  "version": "0.7.0",
+  "download": "https://github.com/Plushtoast/dsa5-char2pdf/releases/download/0.7.0/dsa5-char2pdf-0.7.0.zip",
   "relationships": {
     "systems": [
       {
@@ -34,7 +38,6 @@
     "./lib/pdf-lib.js"
   ], 
   "url": "https://github.com/Plushtoast/dsa5-char2pdf",
-  "manifest": "https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdf/master/module.json",
-  "download": "https://github.com/Plushtoast/dsa5-char2pdf/archive/main.zip",
+  "manifest": "https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdf/main/module.json",
   "bugs": "https://github.com/Plushtoast/dsa5-char2pdf/issues/new/choose"
 }
