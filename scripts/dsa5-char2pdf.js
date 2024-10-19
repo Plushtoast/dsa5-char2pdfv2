@@ -7,7 +7,7 @@ var modul_version = '';
  */
 
 class dsa5char2pdf {
-  static ID = 'dsa5-char2pdf';
+  static ID = 'dsa5-char2pdfv2';
 
   static TEMPLATES = {
     PDF_Template: `modules/${this.ID}/templates/template.pdf`,
@@ -278,7 +278,7 @@ async function fillForm(dsa_actor_id) {
     const form = pdfDoc.getForm();
 
     /** check for modul version */
-    const ModuleAPI = game.modules.get('dsa5-char2pdf');
+    const ModuleAPI = game.modules.get('dsa5-char2pdfv2');
     modul_version = ModuleAPI.version;
 
     /** Current date in right format */

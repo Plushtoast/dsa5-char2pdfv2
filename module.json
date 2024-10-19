@@ -1,5 +1,5 @@
 {
-  "id": "dsa5-char2pdf",
+  "id": "dsa5-char2pdfv2",
   "title": "The Dark Eye 5th Ed. - Char2pdf",
   "description": "Export your Avartar to PDF Template",
   "authors": [
@@ -13,7 +13,7 @@
   "license": "MIT LICENSE",
   "flags": {},
   "version": "0.7.0",
-  "download": "https://github.com/Plushtoast/dsa5-char2pdf/releases/download/0.7.0/dsa5-char2pdf-0.7.0.zip",
+  "download": "https://github.com/Plushtoast/dsa5-char2pdfv2/releases/download/0.7.0/dsa5-char2pdfv2-0.7.0.zip",
   "relationships": {
     "systems": [
       {
@@ -37,7 +37,7 @@
     "./lib/FileSaver.js",
     "./lib/pdf-lib.js"
   ], 
-  "url": "https://github.com/Plushtoast/dsa5-char2pdf",
-  "manifest": "https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdf/main/module.json",
-  "bugs": "https://github.com/Plushtoast/dsa5-char2pdf/issues/new/choose"
+  "url": "https://github.com/Plushtoast/dsa5-char2pdfv2",
+  "manifest": "https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdfv2/main/module.json",
+  "bugs": "https://github.com/Plushtoast/dsa5-char2pdfv2/issues/new/choose"
 }
