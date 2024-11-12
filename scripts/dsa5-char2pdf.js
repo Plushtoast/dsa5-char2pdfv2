@@ -573,6 +573,9 @@ async function fillForm(dsa_actor_id) {
     /** general */
 
     form.getTextField('LE_Max_2').setText(entity.system.status.wounds.max + '');
+    // Don't use the max attribute of speed. It is allways 0.
+    const speed = entity.system.status.speed;
+    form.getTextField('GS_Max_1').setText(String(speed.initial + speed.modifier + speed.gearmodifier));
     form.getTextField('GS_Max_1').setText(entity.system.status.speed.max + '');
     form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
     form.getTextField('INI_Max_1').setText((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2 + '');
