@@ -577,7 +577,7 @@ async function fillForm(dsa_actor_id) {
     form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
     const initiative = entity.system.status.initiative;
     form.getTextField('INI_Max_1').setText(String(
-            Math.floor((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2)
+            Math.round((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2)
             + initiative.modifier + initiative.gearmodifier
         )
     );
