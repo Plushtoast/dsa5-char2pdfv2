@@ -882,7 +882,7 @@ async function fillForm(dsa_actor_id) {
 
     /** set PDF Metadata for PDF*/
     pdfDoc.setTitle('DSA5-' + entity.name + '.pdf created on ' + today);
-    pdfDoc.setSubject('https://github.com/JWinsen/DSA5-Foundry-VTT-Char2PDF');
+    pdfDoc.setSubject('https://github.com/Plushtoast/dsa5-char2pdfv2');
     pdfDoc.setProducer('DSA5 - char2PDF ' + modul_version);
     pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
     pdfDoc.setCreationDate(new Date());
