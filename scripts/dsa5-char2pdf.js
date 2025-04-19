@@ -352,9 +352,19 @@ async function fillForm(dsa_actor_id) {
     form.getTextField('Held_Vorteile').setText(f_advantage);
 
     /** specialability */
+    let f_specialability = '';
 
-    const specialability = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'general');
-    var f_specialability = Array.from(specialability.values(), (value) => value.name).join(', ');
+    /** - General */
+    const specialability_general = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'general');
+    var f_specialability_general = Array.from(specialability_general.values(), (value) => value.name).join(', ');
+    f_specialability += f_specialability_general;
+    
+    /** - Fate Points*/
+    
+    const specialability_fatepoint = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'fatePoints');
+    var f_specialability_fatepoints = Array.from(specialability_fatepoint.values(), (value) => value.name).join(', ');
+    f_specialability += '\n\nSchicksalspunkt SF: ' + f_specialability_fatepoints;
+    
     form.getTextField('Held_SF_allgemein').setText(f_specialability);
 
     /** language */
