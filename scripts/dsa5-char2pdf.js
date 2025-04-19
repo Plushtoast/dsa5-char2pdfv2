@@ -575,7 +575,12 @@ async function fillForm(dsa_actor_id) {
     form.getTextField('LE_Max_2').setText(entity.system.status.wounds.max + '');
     form.getTextField('GS_Max_1').setText(entity.system.status.speed.max + '');
     form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
-    form.getTextField('INI_Max_1').setText((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2 + '');
+    const initiative = entity.system.status.initiative;
+    form.getTextField('INI_Max_1').setText(String(
+            Math.round((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2)
+            + initiative.modifier + initiative.gearmodifier
+        )
+    );
     form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
     form.getTextField('SK_Max_2').setText(entity.system.status.soulpower.max + '');
     form.getTextField('ZK_Max_2').setText(entity.system.status.toughness.max + '');
