@@ -12,8 +12,8 @@
   ],
   "license": "MIT LICENSE",
   "flags": {},
-  "version": "0.7.1",
-  "download": "https://github.com/Plushtoast/dsa5-char2pdfv2/releases/download/0.7.1/dsa5-char2pdfv2-0.7.1.zip",
+  "version": "0.7.2",
+  "download": "https://github.com/Plushtoast/dsa5-char2pdfv2/releases/download/0.7.2/dsa5-char2pdfv2-0.7.2.zip",
   "relationships": {
     "systems": [
       {
