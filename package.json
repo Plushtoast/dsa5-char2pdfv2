@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "node modifiytemplate.js"
+    "build": "node modifytemplate.js"
   },
   "dependencies": {
     "pdf-lib": "^1.17.1"
