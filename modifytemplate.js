@@ -28,7 +28,7 @@ async function editPdf() {
     };
   });*/
 
-  console.log(fieldAppearances)
+  console.debug(`Appearances: ${JSON.stringify(fieldAppearances)}`);
 
   // Draw a rectangle with background color
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -44,6 +44,7 @@ async function editPdf() {
       height: 20,
       color: rgb(1, 1, 1),
     });*/
+
     const lineheight = 13.05
     const name = defaultFields[defaultFields.length - i - 1]
     const textField = form.createTextField(name + "_name");
@@ -52,9 +53,10 @@ async function editPdf() {
       x: 37,
       y: 488.7 + i * lineheight,
       width: 93.7,
-      height: lineheight - 1.1,
+      height: lineheight - 1.2,
       color: rgb(1, 1, 1),
-      borderWidth: 2,
+      borderWidth: 0,
+      borderColor: rgb(1,1,1),
       backgroundColor: rgb(1, 1, 1),
     });
 
@@ -70,11 +72,10 @@ async function editPdf() {
       x: 131.5,            // X-coordinate
       y: 488.7 + i * lineheight,            // Y-coordinate
       width: 33,        // Width of the dropdown
-      height: lineheight - 1.1,        // Height of the dropdown
-      borderWidth: 2,
-      backgroundColor: rgb(1, 1, 1),
-    });
-   
+      height: lineheight - 1.2,        // Height of the dropdown
+      borderWidth: 0,
+      backgroundColor: rgb(0.8828125, 0.8359375, 0.816),
+    }); 
   }
 
   existingFields.forEach((field) => {
