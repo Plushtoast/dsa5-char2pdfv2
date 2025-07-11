@@ -128,10 +128,10 @@ class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMi
 
   async _prepareContext(_options) {
     const data = await super._prepareContext(_options);
-    
+
     data.ID = this.actor.id;
     data.actor = this.actor.name;
-    
+
     return data;
   }
 
@@ -196,6 +196,57 @@ function Leitwert_long(Leitwert_short) {
 /**
  * Call function to fill pdf template
  */
+
+function combat(name, destination, hasParry) {
+  const skill = entity.items.find(item => item.type === 'combatskill' && item.name === name);
+  if (!skill) return { r_AT: 0, r_PA: 0 };
+
+  const combatskillData = game.dsa5.dataModels.Item.combatskill._calculateCombatSkillValues(skill, entity.system);
+
+  form.getTextField(`KT_FW_${destination}`).setText(String(combatskillData.system.talentValue.value).normalize('NFC'));
+  form.getTextField(`KT_AT_${destination}`).setText(String(combatskillData.system.attack.value).normalize('NFC'));
+  if (hasParry) {
+    form.getTextField(`KT_PA_${destination}`).setText(String(combatskillData.system.parry.value).normalize('NFC'));
+  }
+
+  return {
+    r_AT: combatskillData.system.attack.value,
+    r_PA: hasParry ? combatskillData.system.parry.value : 0,
+  };
+}
+
+function talent(name, destination) {
+  const skillItems = map.filter(item => item.type === 'skill' && item.name === name);
+  if (!skillItems.length) return;
+
+  const skill = skillItems[0];
+  const talentValue = skill.system.talentValue.value;
+  form.getTextField('Talent_FW_' + destination).setText(String(talentValue).normalize('NFC'));
+
+  const charNames = [
+    skill.system.characteristic1.value,
+    skill.system.characteristic2.value,
+    skill.system.characteristic3.value
+  ];
+  const charValues = charNames.map(n => entity.system.characteristics[n]?.value ?? 0);
+
+  let routine = '';
+  if (charValues.every(v => v >= 13)) {
+    if (talentValue >= 1 && talentValue < 4) routine = '+3';
+    else if (talentValue >= 4 && talentValue < 7) routine = '+2';
+    else if (talentValue >= 7 && talentValue < 10) routine = '+1';
+    else if (talentValue >= 10 && talentValue < 13) routine = '0';
+    else if (talentValue >= 13 && talentValue < 16) routine = '-1';
+    else if (talentValue >= 16 && talentValue < 19) routine = '-2';
+    else if (talentValue >= 19) routine = '-3';
+  }
+}
+
+function coins(currencyName, fieldShort) {
+  const currencyItems = map.filter(item => item.name === currencyName);
+  const total = currencyItems.reduce((sum, item) => sum + Number(item.system.quantity.value), 0);
+  form.getTextField('Geld_' + fieldShort).setText(String(total).normalize('NFC'));
+}
 
 async function fillForm(dsa_actor_id) {
   try {
@@ -481,38 +532,7 @@ async function fillForm(dsa_actor_id) {
     talent('Steinbearbeitung', 58);
     talent('Stoffbearbeitung', 59);
 
-    function talent(name, destination) {
-      var name = map.filter((value) => value.type === 'skill').filter((value) => value.name === name);
 
-      var temp = Array.from(name.values(), (value) => value.system.talentValue.value);
-      form.getTextField('Talent_FW_' + destination).setText((temp + '').normalize('NFC'));
-
-      let e_1_name = Array.from(name.values(), (value) => value.system.characteristic1.value)[0];
-      let e_2_name = Array.from(name.values(), (value) => value.system.characteristic1.value)[0];
-      let e_3_name = Array.from(name.values(), (value) => value.system.characteristic1.value)[0];
-      let e_1_value = entity.system.characteristics[e_1_name].value;
-      let e_2_value = entity.system.characteristics[e_2_name].value;
-      let e_3_value = entity.system.characteristics[e_3_name].value;
-
-      let routine = '';
-      if (e_1_value >= 13 && e_2_value >= 13 && e_3_value >= 13) {
-        if (temp[0] >= 1 && temp[0] < 4) {
-          routine = '+3';
-        } else if (temp[0] >= 4 && temp[0] < 7) {
-          routine = '+2';
-        } else if (temp[0] >= 7 && temp[0] < 10) {
-          routine = '+1';
-        } else if (temp[0] >= 10 && temp[0] < 13) {
-          routine = '0';
-        } else if (temp[0] >= 13 && temp[0] < 16) {
-          routine = '-1';
-        } else if (temp[0] >= 16 && temp[0] < 19) {
-          routine = '-2';
-        } else if (temp[0] >= 19) {
-          routine = '-3';
-        }
-      }
-    }
 
     /** Combat */
     /** general */
@@ -549,44 +569,6 @@ async function fillForm(dsa_actor_id) {
     const r_Zweihandhiebwaffen = combat('Zweihandhiebwaffen', 13, 1);
     const r_Zweihandschwerter = combat('Zweihandschwerter', 14, 1);
 
-    function combat(name, destination, pa) {
-      const skill = entity.items.find((x) => x.type === 'combatskill' && x.name === name);
-      const combatskilldata = game.dsa5.dataModels.Item.combatskill._calculateCombatSkillValues(skill, entity.system);
-      form.getTextField('KT_FW_' + destination).setText((combatskilldata.system.talentValue.value + '').normalize('NFC'));
-      form.getTextField('KT_AT_' + destination).setText((combatskilldata.system.attack.value + '').normalize('NFC'));
-      if (pa) {
-        form.getTextField('KT_PA_' + destination).setText((combatskilldata.system.parry.value + '').normalize('NFC'));
-      }
-      return {
-        r_AT: combatskilldata.system.attack.value,
-        r_PA: pa ? combatskilldata.system.parry.value : 0,
-      };
-    }
-
-    /*function combat(name, destination, pa, Leitwert) {
-      var at_fk_modifier = Math.floor((Number(entity.system.characteristics.mu.value) - 8) / 3);
-      var name = map.filter((value) => value.type === 'combatskill').filter((value) => value.name === name);
-
-      var temp1 = Array.from(name.values(), (value) => value.system.talentValue.value);
-      form.getTextField('KT_FW_' + destination).setText(temp1 + '');
-
-      var temp2 = Array.from(name.values(), (value) => value.system.attack.value);
-      console.log(temp2, at_fk_modifier);
-      form.getTextField('KT_AT_' + destination).setText(Number(temp2) + Number(at_fk_modifier) + '');
-
-      if (pa === 1) {
-        var max_LW_bonus = Math.floor((Math.max.apply(Math, Leitwert) - 8) / 3);
-        var temp3 = Math.round(Array.from(name.values(), (value) => value.system.talentValue.value) / 2) + Number(max_LW_bonus);
-        form.getTextField('KT_PA_' + destination).setText(temp3 + '');
-      }
-      return {
-        r_AT: Number(temp1) + Number(temp2) + Number(at_fk_modifier),
-        r_PA: Number(temp3),
-      };
-    }*/
-
-    /** combat specialability */
-
     const combat_specialability = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'Combat');
     var f_combat_specialability = Array.from(combat_specialability.values(), (value) => value.name + ' ' + romanize(value.system.step.value)).join(', ');
 
@@ -598,12 +580,6 @@ async function fillForm(dsa_actor_id) {
     coins('Silber', 'S');
     coins('Heller', 'H');
     coins('Kreuzer', 'K');
-
-    function coins(currency, shorten) {
-      var currency = map.filter((value) => value.name === currency);
-      var f_currency = Array.from(currency.values(), (value) => value.system.quantity.value);
-      form.getTextField('Geld_' + shorten).setText((f_currency + '').normalize('NFC'));
-    }
 
     /** Weapons */
     /** melee weapon */
@@ -743,11 +719,11 @@ async function fillForm(dsa_actor_id) {
         .getTextField('Z_Probe_' + (i + 1))
         .setText(
           (combat_spells[i].system.characteristic1.value.toUpperCase() +
-          ' / ' +
-          combat_spells[i].system.characteristic2.value.toUpperCase() +
-          ' / ' +
-          combat_spells[i].system.characteristic3.value.toUpperCase() +
-          '').normalize('NFC')
+            ' / ' +
+            combat_spells[i].system.characteristic2.value.toUpperCase() +
+            ' / ' +
+            combat_spells[i].system.characteristic3.value.toUpperCase() +
+            '').normalize('NFC')
         );
       form.getTextField('Z_FW_' + (i + 1)).setText((combat_spells[i].system.talentValue.value + '').normalize('NFC'));
       form.getTextField('Z_AsP_' + (i + 1)).setText((combat_spells[i].system.AsPCost.value + '').normalize('NFC'));
@@ -795,11 +771,11 @@ async function fillForm(dsa_actor_id) {
         .getTextField('L_Probe_' + (i + 1))
         .setText(
           (combat_liturgy[i].system.characteristic1.value.toUpperCase() +
-          ' / ' +
-          combat_liturgy[i].system.characteristic2.value.toUpperCase() +
-          ' / ' +
-          combat_liturgy[i].system.characteristic3.value.toUpperCase() +
-          '').normalize('NFC')
+            ' / ' +
+            combat_liturgy[i].system.characteristic2.value.toUpperCase() +
+            ' / ' +
+            combat_liturgy[i].system.characteristic3.value.toUpperCase() +
+            '').normalize('NFC')
         );
       form.getTextField('L_FW_' + (i + 1)).setText((combat_liturgy[i].system.talentValue.value + '').normalize('NFC'));
       form.getTextField('L_KaP_' + (i + 1)).setText((combat_liturgy[i].system.AsPCost.value + '').normalize('NFC'));
