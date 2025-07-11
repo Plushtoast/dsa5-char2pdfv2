@@ -39,13 +39,13 @@ class RomanNumerals {
   static romanize(num) {
     num = Number(num);
     if (!Number.isInteger(num) || num <= 0) return false;
-    
+
     const romanNumerals = [
       ['M', 1000], ['CM', 900], ['D', 500], ['CD', 400],
       ['C', 100], ['XC', 90], ['L', 50], ['XL', 40],
       ['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1],
     ];
-    
+
     let result = '';
     for (const [roman, value] of romanNumerals) {
       while (num >= value) {
@@ -61,9 +61,9 @@ class RomanNumerals {
     const validator = /^M*(?:D?C{0,3}|C[MD])(?:L?X{0,3}|X[CL])(?:V?I{0,3}|I[XV])$/;
     const token = /[MDLV]|C[MD]?|X[CL]?|I[XV]?/g;
     const key = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
-    
+
     if (!(upperStr && validator.test(upperStr))) return false;
-    
+
     let num = 0;
     let match;
     while ((match = token.exec(upperStr))) {
@@ -132,14 +132,6 @@ class CharacterUtils {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const yyyy = today.getFullYear();
     return `${dd}.${mm}.${yyyy}`;
-  }
-
-  static translateReach(reach) {
-    const translations = {
-      'short': 'kurz',
-      'long': 'lang'
-    };
-    return translations[reach] || reach;
   }
 }
 
@@ -276,8 +268,12 @@ class DSACHAR2PDF {
     this.combatSkills = {};
   }
 
-  setTextField(fieldName, value) {
-    this.form.getTextField(fieldName).setText(String(value).normalize('NFC'));
+  setTextField(fieldName, value, fontSize = undefined) {
+    const field = this.form.getTextField(fieldName);
+    field.setText(String(value).normalize('NFC'));
+    if (fontSize) {
+      field.setFontSize(fontSize);
+    }
   }
 
   findItemByName(name, type) {
@@ -297,7 +293,7 @@ class DSACHAR2PDF {
 
     this.setTextField(`KT_FW_${destination}`, combatskillData.system.talentValue.value);
     this.setTextField(`KT_AT_${destination}`, combatskillData.system.attack.value);
-    
+
     if (hasParry) {
       this.setTextField(`KT_PA_${destination}`, combatskillData.system.parry.value);
     }
@@ -313,7 +309,7 @@ class DSACHAR2PDF {
     if (!skill) return;
 
     const talentValue = skill.system.talentValue.value;
-    this.setTextField(`Talent_FW_${destination}`, talentValue);
+    this.setTextField(`Talent_FW_${destination}`, talentValue, 8);
 
     const charNames = [
       skill.system.characteristic1.value,
@@ -328,16 +324,20 @@ class DSACHAR2PDF {
         [1, 4, '+3'], [4, 7, '+2'], [7, 10, '+1'], [10, 13, '0'],
         [13, 16, '-1'], [16, 19, '-2'], [19, Infinity, '-3']
       ];
-      
+
       const routine = routineModifiers.find(([min, max]) => talentValue >= min && talentValue < max)?.[2] || '';
       // Use routine if needed
     }
   }
 
-  processCoins(currencyName, fieldShort) {
-    const currencyItems = this.filterItems('equipment', item => item.name === currencyName);
-    const total = currencyItems.reduce((sum, item) => sum + Number(item.system.quantity.value), 0);
-    this.setTextField(`Geld_${fieldShort}`, total);
+  processCoins() {
+    const coins = ['Dukaten', 'Silber', 'Heller', 'Kreuzer'];
+    for (let currencyName of coins) {
+      const currencyItems = this.filterItems('money', item => game.i18n.localize(item.name) === currencyName);
+      const total = currencyItems.reduce((sum, item) => sum + Number(item.system.quantity.value), 0);
+      const fieldShort = currencyName[0];
+      this.setTextField(`Geld_${fieldShort}`, total);
+    }
   }
 
   fillCharacterDetails() {
@@ -444,9 +444,9 @@ class DSACHAR2PDF {
   }
 
   setEquipmentFields(itemType, namePrefix, maxItems, processFn) {
-    const items = this.filterItems(itemType, item => item.system.worn?.value === 'true');
+    const items = this.filterItems(itemType, item => item.system.worn?.value);
     const arrayLength = Math.min(items.length, maxItems);
-    
+
     if (items.length > maxItems) {
       ui.notifications.warn(`You have equipped more than ${maxItems} ${itemType}s! The template can only hold a maximum of ${maxItems}`);
     }
@@ -456,14 +456,16 @@ class DSACHAR2PDF {
     }
   }
 
+  static WORNGEARFONTSIZE = 9;
+
   setShieldFields() {
     this.setEquipmentFields('meleeweapon', 'Schild', Config.MAX_ITEMS.SHIELDS, (item, index) => {
       if (item.system.combatskill.value !== 'Schilde') return;
-      
-      this.setTextField(`Schild_Name_Anzeige_${index}`, item.name);
-      this.setTextField(`Schild_SP_${index}`, `${item.system.structure.value} / ${item.system.structure.max}`);
-      this.setTextField(`Schild_Mod_${index}`, `AT:${item.system.atmod.value} / PA:${item.system.pamod.value}`);
-      this.setTextField(`Schild_Gewicht_${index}`, item.system.weight.value);
+
+      this.setTextField(`Schild_Name_Anzeige_${index}`, item.name, DSACHAR2PDF.WORNGEARFONTSIZE);
+      this.setTextField(`Schild_SP_${index}`, `${item.system.structure.value} / ${item.system.structure.max}`, DSACHAR2PDF.WORNGEARFONTSIZE);
+      this.setTextField(`Schild_Mod_${index}`, `AT:${item.system.atmod.value} / PA:${item.system.pamod.value}`, DSACHAR2PDF.WORNGEARFONTSIZE);
+      this.setTextField(`Schild_Gewicht_${index}`, item.system.weight.value, 9);
     });
   }
 
@@ -479,7 +481,7 @@ class DSACHAR2PDF {
       };
 
       Object.entries(fieldMappings).forEach(([field, value]) => {
-        this.setTextField(field, value);
+        this.setTextField(field, value, DSACHAR2PDF.WORNGEARFONTSIZE);
       });
     });
   }
@@ -498,22 +500,22 @@ class DSACHAR2PDF {
       };
 
       Object.entries(fieldMappings).forEach(([field, value]) => {
-        this.setTextField(field, value);
+        this.setTextField(field, value, DSACHAR2PDF.WORNGEARFONTSIZE);
       });
     });
   }
 
   setMeleeFields() {
-    const meleeWeapons = this.filterItems('meleeweapon', item => 
-      item.system.worn?.value === 'true' && item.system.combatskill.value !== 'Schilde'
-    );
-    
+    /*const meleeWeapons = this.filterItems('meleeweapon', item =>
+      item.system.worn?.value && item.system.combatskill.value !== 'Schilde'
+    );*/
+
     this.setEquipmentFields('meleeweapon', 'Nahwaffe', Config.MAX_ITEMS.MELEE_WEAPONS, (item, index) => {
       if (item.system.combatskill.value === 'Schilde') return;
-      
+
       const combatSkill = this.combatSkills[item.system.combatskill.value] || { r_AT: 0, r_PA: 0 };
-      const reach = CharacterUtils.translateReach(item.system.reach.value);
-      
+      const reach = game.i18n.localize(`Range-${item.system.reach.value}`);
+
       const fieldMappings = {
         [`Nahwaffe_Name_Anzeige_${index}`]: item.name,
         [`Nah_Kampftechnik_Name_Anzeige_${index}`]: item.system.combatskill.value,
@@ -531,7 +533,7 @@ class DSACHAR2PDF {
       };
 
       Object.entries(fieldMappings).forEach(([field, value]) => {
-        this.setTextField(field, value);
+        this.setTextField(field, value, DSACHAR2PDF.WORNGEARFONTSIZE);
       });
     });
   }
@@ -548,7 +550,7 @@ class DSACHAR2PDF {
 
   processSpellLikeItems(items, namePrefix, fieldPrefix, maxItems) {
     const arrayLength = Math.min(items.length, maxItems);
-    
+
     if (items.length > maxItems) {
       ui.notifications.warn(`You have more than ${maxItems} ${namePrefix.toLowerCase()}s! The template can only hold a maximum of ${maxItems}`);
     }
@@ -556,12 +558,12 @@ class DSACHAR2PDF {
     for (let i = 0; i < arrayLength; i++) {
       const item = items[i];
       const index = i + 1;
-      
+
       const characteristics = [
         item.system.characteristic1.value.toUpperCase(),
         item.system.characteristic2.value.toUpperCase(),
         item.system.characteristic3.value.toUpperCase()
-      ].join(' / ');
+      ].join('/');
 
       const fieldMappings = {
         [`${namePrefix}_Anzeige_${index}`]: item.name,
@@ -578,7 +580,7 @@ class DSACHAR2PDF {
       };
 
       Object.entries(fieldMappings).forEach(([field, value]) => {
-        this.setTextField(field, value);
+        this.setTextField(field, value, 7);
       });
     }
   }
@@ -612,23 +614,27 @@ class DSACHAR2PDF {
     // Process special abilities
     const generalSA = this.filterItems('specialability', item => item.system.category.value === 'general');
     const fatePointSA = this.filterItems('specialability', item => item.system.category.value === 'fatePoints');
-    
+
     const generalNames = generalSA.map(item => item.name).join(', ');
     const fatePointNames = fatePointSA.map(item => item.name).join(', ');
-    
-    const combined = `${generalNames}\n\nSchicksalspunkt SF: ${fatePointNames}`;
+
+    let combined = generalNames;
+    if (fatePointNames) {
+      combined += `\n\nSchicksalspunkt SF: ${fatePointNames}`;
+    }
+
     this.setTextField('Held_SF_allgemein', combined);
   }
 
   processLanguagesAndScripts() {
-    const languages = this.filterItems('specialability', item => 
+    const languages = this.filterItems('specialability', item =>
       item.system.category.value === 'language' && item.name.includes('Sprache')
     );
-    const scripts = this.filterItems('specialability', item => 
+    const scripts = this.filterItems('specialability', item =>
       item.system.category.value === 'language' && item.name.includes('Schrift')
     );
 
-    const formatItems = (items) => 
+    const formatItems = (items) =>
       items.map(item => `${item.name} ${RomanNumerals.romanize(item.system.step.value)}`).join(', ');
 
     this.setTextField('Held_Sprachen', formatItems(languages));
@@ -682,11 +688,11 @@ class DSACHAR2PDF {
 
       // Combat section
       this.setTextField('LE_Max_2', this.entity.system.status.wounds.max);
-      
+
       const speed = this.entity.system.status.speed;
       this.setTextField('GS_Max_1', speed.initial + speed.modifier + speed.gearmodifier);
       this.setTextField('AW_Max_2', this.entity.system.status.dodge.max);
-      
+
       const initiative = this.entity.system.status.initiative;
       const characteristics = this.entity.system.characteristics;
       this.setTextField('INI_Max_1',
@@ -706,10 +712,8 @@ class DSACHAR2PDF {
       this.setTextField('Held_SF_Kampf', combatSANames);
 
       // Coins
-      ['Dukaten', 'Silber', 'Heller', 'Kreuzer'].forEach((coin, index) => {
-        const shortCode = ['D', 'S', 'H', 'K'][index];
-        this.processCoins(coin, shortCode);
-      });
+
+      this.processCoins();
 
       // Equipment
       this.setMeleeFields();
@@ -718,11 +722,12 @@ class DSACHAR2PDF {
       this.setShieldFields();
 
       // Inventory
-      const items = this.filterItems('equipment')
-        .concat(this.filterItems('meleeweapon'))
-        .concat(this.filterItems('armor'))
-        .concat(this.filterItems('rangeweapon'))
-        .concat(this.filterItems('ammunition'));
+      const equipmentCategories = game.dsa5.config.equipmentCategories;
+      const items = this.map.filter(item => equipmentCategories.has(item.type) && (!item.system.worn?.value || item.type === 'equipment'));
+
+      if (game.settings.get('dsa5', 'moneyHasWeight')) {
+        items.push(...this.filterItems('money'));
+      }
 
       let sumWeight1 = 0;
       let sumWeight2 = 0;
@@ -733,20 +738,21 @@ class DSACHAR2PDF {
       }
 
       for (let i = 0; i < arrayLength; i++) {
-        const quantity = Number(items[i].system.quantity.value) > 1 ? `${items[i].system.quantity.value}x ` : '';
+        const quantityV = items[i].system.quantity.value
+        const quantity = quantityV > 1 ? `${quantityV}x ` : '';
         this.setTextField(`Besitz_Name_${i + 1}`, quantity + items[i].name);
-        this.setTextField(`Besitz_Gewicht_${i + 1}`, items[i].system.weight.value);
-        
+        this.setTextField(`Besitz_Gewicht_${i + 1}`, items[i].system.weight.value * quantityV);
+
         if (i <= 36) {
-          sumWeight1 += Number(items[i].system.weight.value);
+          sumWeight1 += items[i].system.weight.value * quantityV;
         } else {
-          sumWeight2 += Number(items[i].system.weight.value);
+          sumWeight2 += items[i].system.weight.value * quantityV;
         }
       }
 
       this.setTextField('Gewicht_1', Math.round(sumWeight1 * 100) / 100);
       this.setTextField('Gewicht_2', Math.round((sumWeight1 + sumWeight2) * 100) / 100);
-      this.setTextField('Trag_1', Number(characteristics.kk.value) * 2);
+      this.setTextField('Trag_1', this.entity.system.carrycapacity);
 
       // Magic section
       this.setSpellFields();
@@ -800,7 +806,7 @@ class DSACHAR2PDF {
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf;charset=utf-8' });
       saveAs(blob, `DSA5-${this.entity.name}.pdf`);
-      
+
     } catch (err) {
       ui.notifications.error(`Char2PDF - Error: ${err.message}`);
       console.error(err);
