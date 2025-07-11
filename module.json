@@ -12,23 +12,23 @@
   ],
   "license": "MIT LICENSE",
   "flags": {},
-  "version": "0.7.2",
-  "download": "https://github.com/Plushtoast/dsa5-char2pdfv2/releases/download/0.7.2/dsa5-char2pdfv2-0.7.2.zip",
+  "version": "0.8.0",
+  "download": "https://github.com/Plushtoast/dsa5-char2pdfv2/releases/download/0.8.0/dsa5-char2pdfv2-0.8.0.zip",
   "relationships": {
     "systems": [
       {
         "id": "dsa5",
         "type": "system",
         "compatibility": {
-          "minimum": "6.0.0"
+          "minimum": "7.0.0"
         }
       }
     ]
   },
   "compatibility": {
-    "minimum": "12",
-    "verified": "12",
-    "maximum": "12"
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
   },
   "esmodules": [
     "./scripts/dsa5-char2pdf.js"

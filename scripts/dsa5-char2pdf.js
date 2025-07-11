@@ -98,19 +98,19 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 
 /** register Hook to Display Option within the actor context menu */
 
-Hooks.on('getActorDirectoryEntryContext', (html, entryOptions) => {
+Hooks.on('getActorContextOptions', (html, entryOptions) => {
   entryOptions.push({
     name: 'DSA5-Char2PDF',
     icon: '<i class="fas fa-tasks"></i>',
     condition: (li) => {
-      const entity = ActorDirectory.collection.get(li.data('documentId'));
+      const entity = game.actors.get(li.dataset.entryId);
       //check for the right DSA5 template and for the right type
       if (entity.type == 'character' || entity.sheet == 'ActorSheetdsa5Character') {
         return entity.id;
       }
     },
     callback: (li) => {
-      const actor = ActorDirectory.collection.get(li.data('documentId'));
+      const actor = game.actors.get(li.dataset.entryId);
       const exportPreferences = new ExportPreferences(actor);
       exportPreferences.render(true);
     },
@@ -119,62 +119,39 @@ Hooks.on('getActorDirectoryEntryContext', (html, entryOptions) => {
 
 /** Set up FormApplication */
 
-class ExportPreferences extends FormApplication {
+class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
   constructor(actor) {
     super();
     this.actor = actor;
   }
 
-  static get defaultOptions() {
-    const defaults = super.defaultOptions;
-    const overrides = {
-      closeOnSubmit: false,
-      height: 'auto',
-      id: 'export_preferences',
-      submitOnChange: true,
+  static DEFAULT_OPTIONS = {
+    id: 'export_preferences',
+    window: { title: 'DSA5 - char2PDF' },
+    actions: {
+      btn_Export: this._btn_Export
+    }
+  };
+
+  static PARTS = {
+    main: {
       template: dsa5char2pdf.TEMPLATES.export_preferences,
-      title: 'DSA5 - char2PDF',
-      chkbox_actorstale: false,
-      chkbox_delpages: false,
-    };
-    const mergedOptions = foundry.utils.mergeObject(defaults, overrides);
-    return mergedOptions;
+    },
+  };
+
+  async _prepareContext(_options) {
+    const data = await super._prepareContext(_options);
+    
+    data.ID = this.actor.id;
+    data.actor = this.actor.name;
+    
+    return data;
   }
 
-  getData(options) {
-    return {
-      ID: this.actor.id,
-      actor: this.actor.name,
-      chkbox_actorstale: false,
-      chkbox_delpages: false,
-    };
-  }
-
-  activateListeners() {
-    document.getElementById('btn_Export').addEventListener('click', async (event) => {
-      event.preventDefault();
-      event.currentTarget.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
-      await fillForm(this.actor.uuid);
-      this.close();
-    });
-    /**
-    const chkbox_actorstale = document.querySelector("input[name=chkbox_actors_tale]");
-    chkbox_actorstale.addEventListener('change', function() {
-      if (this.checked) {
-        cb_actors_tale = true; 
-      } else {
-        cb_actors_tale = false; 
-      }
-    });
-
-    const chkbox_delpages = document.querySelector("input[name=chkbox_del_pages]");
-    chkbox_delpages.addEventListener('change', function() {
-      if (this.checked) {
-        cb_del_pages = true;
-      } else {
-        cb_del_pages = false;
-      }
-    });*/
+  static async _btn_Export(ev, target) {
+    target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+    await fillForm(this.actor.uuid);
+    this.close();
   }
 }
 
@@ -358,13 +335,13 @@ async function fillForm(dsa_actor_id) {
     const specialability_general = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'general');
     var f_specialability_general = Array.from(specialability_general.values(), (value) => value.name).join(', ');
     f_specialability += f_specialability_general;
-    
+
     /** - Fate Points*/
-    
+
     const specialability_fatepoint = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'fatePoints');
     var f_specialability_fatepoints = Array.from(specialability_fatepoint.values(), (value) => value.name).join(', ');
     f_specialability += '\n\nSchicksalspunkt SF: ' + f_specialability_fatepoints;
-    
+
     form.getTextField('Held_SF_allgemein').setText(f_specialability);
 
     /** language */
@@ -589,9 +566,9 @@ async function fillForm(dsa_actor_id) {
     form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
     const initiative = entity.system.status.initiative;
     form.getTextField('INI_Max_1').setText(String(
-            Math.round((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2)
-            + initiative.modifier + initiative.gearmodifier
-        )
+      Math.round((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2)
+      + initiative.modifier + initiative.gearmodifier
+    )
     );
     form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
     form.getTextField('SK_Max_2').setText(entity.system.status.soulpower.max + '');
@@ -616,7 +593,7 @@ async function fillForm(dsa_actor_id) {
 
     function combat(name, destination, pa) {
       const skill = entity.items.find((x) => x.type === 'combatskill' && x.name === name);
-      const combatskilldata = game.dsa5.entities.Actordsa5._calculateCombatSkillValues(skill, entity.system);
+      const combatskilldata = game.dsa5.dataModels.Item.combatskill._calculateCombatSkillValues(skill, entity.system);
       form.getTextField('KT_FW_' + destination).setText(combatskilldata.system.talentValue.value + '');
       form.getTextField('KT_AT_' + destination).setText(combatskilldata.system.attack.value + '');
       if (pa) {
@@ -808,11 +785,11 @@ async function fillForm(dsa_actor_id) {
         .getTextField('Z_Probe_' + (i + 1))
         .setText(
           combat_spells[i].system.characteristic1.value.toUpperCase() +
-            ' / ' +
-            combat_spells[i].system.characteristic2.value.toUpperCase() +
-            ' / ' +
-            combat_spells[i].system.characteristic3.value.toUpperCase() +
-            ''
+          ' / ' +
+          combat_spells[i].system.characteristic2.value.toUpperCase() +
+          ' / ' +
+          combat_spells[i].system.characteristic3.value.toUpperCase() +
+          ''
         );
       form.getTextField('Z_FW_' + (i + 1)).setText(combat_spells[i].system.talentValue.value + '');
       form.getTextField('Z_AsP_' + (i + 1)).setText(combat_spells[i].system.AsPCost.value + '');
@@ -860,11 +837,11 @@ async function fillForm(dsa_actor_id) {
         .getTextField('L_Probe_' + (i + 1))
         .setText(
           combat_liturgy[i].system.characteristic1.value.toUpperCase() +
-            ' / ' +
-            combat_liturgy[i].system.characteristic2.value.toUpperCase() +
-            ' / ' +
-            combat_liturgy[i].system.characteristic3.value.toUpperCase() +
-            ''
+          ' / ' +
+          combat_liturgy[i].system.characteristic2.value.toUpperCase() +
+          ' / ' +
+          combat_liturgy[i].system.characteristic3.value.toUpperCase() +
+          ''
         );
       form.getTextField('L_FW_' + (i + 1)).setText(combat_liturgy[i].system.talentValue.value + '');
       form.getTextField('L_KaP_' + (i + 1)).setText(combat_liturgy[i].system.AsPCost.value + '');
