@@ -268,21 +268,21 @@ async function fillForm(dsa_actor_id) {
 
     /** character detail */
 
-    form.getTextField('Held_Name').setText(entity.name);
-    form.getTextField('Held_Geschlecht').setText(entity.system.details.gender.value);
-    form.getTextField('Held_Spezies_Anzeige').setText(entity.system.details.species.value);
-    form.getTextField('Held_Geburtsdatum').setText('');
-    form.getTextField('Held_Alter' + '').setText(entity.system.details.age.value);
-    form.getTextField('Held_Haare').setText(entity.system.details.haircolor.value);
-    form.getTextField('Held_Augen').setText(entity.system.details.eyecolor.value);
-    form.getTextField('Held_Groesse' + '').setText(entity.system.details.height.value);
-    form.getTextField('Held_Gewicht' + '').setText(entity.system.details.weight.value);
-    form.getTextField('Held_Profession_Anzeige').setText(entity.system.details.career.value);
-    form.getTextField('Held_Kultur_Anzeige').setText(entity.system.details.culture.value);
-    form.getTextField('Held_Sozialstatus').setText(entity.system.details.socialstate.value);
-    form.getTextField('Held_Geburtsort').setText(entity.system.details.Home.value);
-    form.getTextField('Held_Familie').setText(entity.system.details.family.value);
-    form.getTextField('Held_Charakteristika').setText(entity.system.details.distinguishingmark.value);
+    form.getTextField('Held_Name').setText(entity.name.normalize('NFC'));
+    form.getTextField('Held_Geschlecht').setText(entity.system.details.gender.value.normalize('NFC'));
+    form.getTextField('Held_Spezies_Anzeige').setText(entity.system.details.species.value.normalize('NFC'));
+    form.getTextField('Held_Geburtsdatum').setText(''.normalize('NFC'));
+    form.getTextField('Held_Alter' + '').setText((entity.system.details.age.value + '').normalize('NFC'));
+    form.getTextField('Held_Haare').setText(entity.system.details.haircolor.value.normalize('NFC'));
+    form.getTextField('Held_Augen').setText(entity.system.details.eyecolor.value.normalize('NFC'));
+    form.getTextField('Held_Groesse' + '').setText((entity.system.details.height.value + '').normalize('NFC'));
+    form.getTextField('Held_Gewicht' + '').setText((entity.system.details.weight.value + '').normalize('NFC'));
+    form.getTextField('Held_Profession_Anzeige').setText(entity.system.details.career.value.normalize('NFC'));
+    form.getTextField('Held_Kultur_Anzeige').setText(entity.system.details.culture.value.normalize('NFC'));
+    form.getTextField('Held_Sozialstatus').setText(entity.system.details.socialstate.value.normalize('NFC'));
+    form.getTextField('Held_Geburtsort').setText(entity.system.details.Home.value.normalize('NFC'));
+    form.getTextField('Held_Familie').setText(entity.system.details.family.value.normalize('NFC'));
+    form.getTextField('Held_Charakteristika').setText(entity.system.details.distinguishingmark.value.normalize('NFC'));
 
     /** actor picture */
 
@@ -307,26 +307,26 @@ async function fillForm(dsa_actor_id) {
     const p_ko = entity.system.characteristics.ko.value;
     const p_kk = entity.system.characteristics.kk.value;
 
-    form.getTextField('MU_1').setText(p_mu + '');
-    form.getTextField('KL_1').setText(p_kl + '');
-    form.getTextField('IN_1').setText(p_in + '');
-    form.getTextField('CH_1').setText(p_ch + '');
-    form.getTextField('FF_1').setText(p_ff + '');
-    form.getTextField('GE_1').setText(p_ge + '');
-    form.getTextField('KO_1').setText(p_ko + '');
-    form.getTextField('KK_1').setText(p_kk + '');
+    form.getTextField('MU_1').setText((p_mu + '').normalize('NFC'));
+    form.getTextField('KL_1').setText((p_kl + '').normalize('NFC'));
+    form.getTextField('IN_1').setText((p_in + '').normalize('NFC'));
+    form.getTextField('CH_1').setText((p_ch + '').normalize('NFC'));
+    form.getTextField('FF_1').setText((p_ff + '').normalize('NFC'));
+    form.getTextField('GE_1').setText((p_ge + '').normalize('NFC'));
+    form.getTextField('KO_1').setText((p_ko + '').normalize('NFC'));
+    form.getTextField('KK_1').setText((p_kk + '').normalize('NFC'));
 
     /** disadvantages */
 
     const disadvantage = map.filter((value) => value.type === 'disadvantage');
     var f_disadvantage = Array.from(disadvantage.values(), (value) => value.name).join(', ');
-    form.getTextField('Held_Nachteile').setText(f_disadvantage);
+    form.getTextField('Held_Nachteile').setText(f_disadvantage.normalize('NFC'));
 
     /** advantages */
 
     const advantage = map.filter((value) => value.type === 'advantage');
     var f_advantage = Array.from(advantage.values(), (value) => value.name).join(', ');
-    form.getTextField('Held_Vorteile').setText(f_advantage);
+    form.getTextField('Held_Vorteile').setText(f_advantage.normalize('NFC'));
 
     /** specialability */
     let f_specialability = '';
@@ -342,7 +342,7 @@ async function fillForm(dsa_actor_id) {
     var f_specialability_fatepoints = Array.from(specialability_fatepoint.values(), (value) => value.name).join(', ');
     f_specialability += '\n\nSchicksalspunkt SF: ' + f_specialability_fatepoints;
 
-    form.getTextField('Held_SF_allgemein').setText(f_specialability);
+    form.getTextField('Held_SF_allgemein').setText(f_specialability.normalize('NFC'));
 
     /** language */
 
@@ -351,7 +351,7 @@ async function fillForm(dsa_actor_id) {
       .filter((value) => value.system.category.value === 'language')
       .filter((value) => value.name.includes('Sprache'));
     var f_language = Array.from(language.values(), (value) => value.name + ' ' + romanize(value.system.step.value)).join(', ');
-    form.getTextField('Held_Sprachen').setText(f_language);
+    form.getTextField('Held_Sprachen').setText(f_language.normalize('NFC'));
 
     /** script */
 
@@ -360,38 +360,38 @@ async function fillForm(dsa_actor_id) {
       .filter((value) => value.system.category.value === 'language')
       .filter((value) => value.name.includes('Schrift'));
     var f_script = Array.from(script.values(), (value) => value.name + ' ' + romanize(value.system.step.value)).join(', ');
-    form.getTextField('Held_Schriften').setText(f_script);
+    form.getTextField('Held_Schriften').setText(f_script.normalize('NFC'));
 
     /** life / wounds */
 
     const baseLE = entity.system.status.wounds.max;
     const actualLE = entity.system.status.wounds.value;
-    form.getTextField('LE_Max_1').setText(String(baseLE));
-    form.getTextField('LE_Max_3').setText(entity.system.status.wounds.max + '');
-    form.getTextField('LE_Wert_1').setText(entity.system.status.wounds.current + '');
+    form.getTextField('LE_Max_1').setText(String(baseLE).normalize('NFC'));
+    form.getTextField('LE_Max_3').setText((entity.system.status.wounds.max + '').normalize('NFC'));
+    form.getTextField('LE_Wert_1').setText((entity.system.status.wounds.current + '').normalize('NFC'));
     if (baseLE !== actualLE) {
-      form.getTextField('LE_Aktuell_1').setText(String(actualLE));
+      form.getTextField('LE_Aktuell_1').setText(String(actualLE).normalize('NFC'));
     }
-    form.getTextField('LE_Kauf_1').setText(entity.system.status.wounds.advances + '');
-    form.getTextField('LE_BM_1').setText(entity.system.status.wounds.modifier + '');
+    form.getTextField('LE_Kauf_1').setText((entity.system.status.wounds.advances + '').normalize('NFC'));
+    form.getTextField('LE_BM_1').setText((entity.system.status.wounds.modifier + '').normalize('NFC'));
 
     /** soulpower*/
 
-    form.getTextField('SK_Max_1').setText(entity.system.status.soulpower.max + '');
-    form.getTextField('SK_Wert_1').setText(entity.system.status.soulpower.value + '');
-    form.getTextField('SK_BM_1').setText(entity.system.status.soulpower.modifier + '');
+    form.getTextField('SK_Max_1').setText((entity.system.status.soulpower.max + '').normalize('NFC'));
+    form.getTextField('SK_Wert_1').setText((entity.system.status.soulpower.value + '').normalize('NFC'));
+    form.getTextField('SK_BM_1').setText((entity.system.status.soulpower.modifier + '').normalize('NFC'));
 
     /** toughness*/
 
-    form.getTextField('ZK_Max_1').setText(entity.system.status.toughness.max + '');
-    form.getTextField('ZK_Wert_1').setText(entity.system.status.toughness.value + '');
-    form.getTextField('ZK_BM_1').setText(entity.system.status.toughness.modifier + '');
+    form.getTextField('ZK_Max_1').setText((entity.system.status.toughness.max + '').normalize('NFC'));
+    form.getTextField('ZK_Wert_1').setText((entity.system.status.toughness.value + '').normalize('NFC'));
+    form.getTextField('ZK_BM_1').setText((entity.system.status.toughness.modifier + '').normalize('NFC'));
 
     /** dodge*/
 
-    form.getTextField('AW_Max_1').setText(entity.system.status.dodge.max + '');
-    form.getTextField('AW_Wert_1').setText(entity.system.status.dodge.value + '');
-    form.getTextField('AW_BM_1').setText(entity.system.status.dodge.modifier + '');
+    form.getTextField('AW_Max_1').setText((entity.system.status.dodge.max + '').normalize('NFC'));
+    form.getTextField('AW_Wert_1').setText((entity.system.status.dodge.value + '').normalize('NFC'));
+    form.getTextField('AW_BM_1').setText((entity.system.status.dodge.modifier + '').normalize('NFC'));
 
     /** astralenergy */
 
@@ -400,11 +400,11 @@ async function fillForm(dsa_actor_id) {
     const actualAE = entity.system.status.astralenergy.value;
     const advAE = entity.system.status.astralenergy.advances;
     const modAE = entity.system.status.astralenergy.modifier;
-    form.getTextField('AE_Max_1').setText(String(baseAE));
+    form.getTextField('AE_Max_1').setText(String(baseAE).normalize('NFC'));
     /* Property "current" is only the "Leiteigenschaft" without the 20AsP basis */
-    form.getTextField('AE_Wert_1').setText(String(currentAE + 20));
-    form.getTextField('AE_Kauf_1').setText(String(advAE));
-    form.getTextField('AE_BM_1').setText(String(modAE));
+    form.getTextField('AE_Wert_1').setText(String(currentAE + 20).normalize('NFC'));
+    form.getTextField('AE_Kauf_1').setText(String(advAE).normalize('NFC'));
+    form.getTextField('AE_BM_1').setText(String(modAE).normalize('NFC'));
 
     /** karmaenergy */
 
@@ -413,11 +413,11 @@ async function fillForm(dsa_actor_id) {
     const actualKE = entity.system.status.karmaenergy.value;
     const advKE = entity.system.status.karmaenergy.advances;
     const modKE = entity.system.status.karmaenergy.modifier;
-    form.getTextField('KE_Max_1').setText(String(baseKE));
+    form.getTextField('KE_Max_1').setText(String(baseKE).normalize('NFC'));
     /* Property "current" ia only the "Leiteigenschaft" withoud the 20KsP basis */
-    form.getTextField('KE_Wert_1').setText(String(currentKE + 20));
-    form.getTextField('KE_Kauf_1').setText(String(advKE));
-    form.getTextField('KE_BM_1').setText(String(modKE));
+    form.getTextField('KE_Wert_1').setText(String(currentKE + 20).normalize('NFC'));
+    form.getTextField('KE_Kauf_1').setText(String(advKE).normalize('NFC'));
+    form.getTextField('KE_BM_1').setText(String(modKE).normalize('NFC'));
 
     /** experience */
     var exp_translate = entity.system.details.experience.description;
@@ -440,22 +440,22 @@ async function fillForm(dsa_actor_id) {
       default:
         break;
     }
-    form.getTextField('AP_Erfahrungsgrad_Anzeige').setText(exp_translate + '');
+    form.getTextField('AP_Erfahrungsgrad_Anzeige').setText((exp_translate + '').normalize('NFC'));
 
-    form.getTextField('AP_gesamt').setText(entity.system.details.experience.total + '');
-    form.getTextField('AP_gesammelt').setText(entity.system.details.experience.current + '');
-    form.getTextField('AP_ausgegeben').setText(entity.system.details.experience.spent + '');
+    form.getTextField('AP_gesamt').setText((entity.system.details.experience.total + '').normalize('NFC'));
+    form.getTextField('AP_gesammelt').setText((entity.system.details.experience.current + '').normalize('NFC'));
+    form.getTextField('AP_ausgegeben').setText((entity.system.details.experience.spent + '').normalize('NFC'));
 
     /** fatepoints */
 
     const base = entity.system.status.fatePoints.current;
     const actual = entity.system.status.fatePoints.value;
-    form.getTextField('SchiP_Wert_1').setText(String(base));
-    form.getTextField('SchiP_Max_1').setText(entity.system.status.fatePoints.max + '');
+    form.getTextField('SchiP_Wert_1').setText(String(base).normalize('NFC'));
+    form.getTextField('SchiP_Max_1').setText((entity.system.status.fatePoints.max + '').normalize('NFC'));
     if (base !== actual) {
-      form.getTextField('SchiP_Aktuell_1').setText(entity.system.status.fatePoints.value + '');
+      form.getTextField('SchiP_Aktuell_1').setText((entity.system.status.fatePoints.value + '').normalize('NFC'));
     }
-    form.getTextField('SchiP_BM_1').setText(entity.system.status.fatePoints.modifier + '');
+    form.getTextField('SchiP_BM_1').setText((entity.system.status.fatePoints.modifier + '').normalize('NFC'));
 
     /** talents */
     /** body talents  */
@@ -527,7 +527,7 @@ async function fillForm(dsa_actor_id) {
       var name = map.filter((value) => value.type === 'skill').filter((value) => value.name === name);
 
       var temp = Array.from(name.values(), (value) => value.system.talentValue.value);
-      form.getTextField('Talent_FW_' + destination).setText(temp + '');
+      form.getTextField('Talent_FW_' + destination).setText((temp + '').normalize('NFC'));
 
       let e_1_name = Array.from(name.values(), (value) => value.system.characteristic1.value)[0];
       let e_2_name = Array.from(name.values(), (value) => value.system.characteristic1.value)[0];
@@ -559,20 +559,20 @@ async function fillForm(dsa_actor_id) {
     /** Combat */
     /** general */
 
-    form.getTextField('LE_Max_2').setText(entity.system.status.wounds.max + '');
+    form.getTextField('LE_Max_2').setText((entity.system.status.wounds.max + '').normalize('NFC'));
     // Don't use the max attribute of speed. It is allways 0.
     const speed = entity.system.status.speed;
-    form.getTextField('GS_Max_1').setText(String(speed.initial + speed.modifier + speed.gearmodifier));
-    form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
+    form.getTextField('GS_Max_1').setText(String(speed.initial + speed.modifier + speed.gearmodifier).normalize('NFC'));
+    form.getTextField('AW_Max_2').setText((entity.system.status.dodge.max + '').normalize('NFC'));
     const initiative = entity.system.status.initiative;
     form.getTextField('INI_Max_1').setText(String(
       Math.round((entity.system.characteristics.mu.value + entity.system.characteristics.ge.value) / 2)
       + initiative.modifier + initiative.gearmodifier
-    )
+    ).normalize('NFC')
     );
-    form.getTextField('AW_Max_2').setText(entity.system.status.dodge.max + '');
-    form.getTextField('SK_Max_2').setText(entity.system.status.soulpower.max + '');
-    form.getTextField('ZK_Max_2').setText(entity.system.status.toughness.max + '');
+    form.getTextField('AW_Max_2').setText((entity.system.status.dodge.max + '').normalize('NFC'));
+    form.getTextField('SK_Max_2').setText((entity.system.status.soulpower.max + '').normalize('NFC'));
+    form.getTextField('ZK_Max_2').setText((entity.system.status.toughness.max + '').normalize('NFC'));
 
     /** Wepaons */
     /** combat */
@@ -594,10 +594,10 @@ async function fillForm(dsa_actor_id) {
     function combat(name, destination, pa) {
       const skill = entity.items.find((x) => x.type === 'combatskill' && x.name === name);
       const combatskilldata = game.dsa5.dataModels.Item.combatskill._calculateCombatSkillValues(skill, entity.system);
-      form.getTextField('KT_FW_' + destination).setText(combatskilldata.system.talentValue.value + '');
-      form.getTextField('KT_AT_' + destination).setText(combatskilldata.system.attack.value + '');
+      form.getTextField('KT_FW_' + destination).setText((combatskilldata.system.talentValue.value + '').normalize('NFC'));
+      form.getTextField('KT_AT_' + destination).setText((combatskilldata.system.attack.value + '').normalize('NFC'));
       if (pa) {
-        form.getTextField('KT_PA_' + destination).setText(combatskilldata.system.parry.value + '');
+        form.getTextField('KT_PA_' + destination).setText((combatskilldata.system.parry.value + '').normalize('NFC'));
       }
       return {
         r_AT: combatskilldata.system.attack.value,
@@ -632,7 +632,7 @@ async function fillForm(dsa_actor_id) {
     const combat_specialability = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'Combat');
     var f_combat_specialability = Array.from(combat_specialability.values(), (value) => value.name + ' ' + romanize(value.system.step.value)).join(', ');
 
-    form.getTextField('Held_SF_Kampf').setText(f_combat_specialability);
+    form.getTextField('Held_SF_Kampf').setText(f_combat_specialability.normalize('NFC'));
 
     /** Coins*/
 
@@ -644,7 +644,7 @@ async function fillForm(dsa_actor_id) {
     function coins(currency, shorten) {
       var currency = map.filter((value) => value.name === currency);
       var f_currency = Array.from(currency.values(), (value) => value.system.quantity.value);
-      form.getTextField('Geld_' + shorten).setText(f_currency + '');
+      form.getTextField('Geld_' + shorten).setText((f_currency + '').normalize('NFC'));
     }
 
     /** Weapons */
@@ -660,15 +660,15 @@ async function fillForm(dsa_actor_id) {
       ui.notifications.warn('You have equipped more than 4 melee weapons! The template can only hold a maximum of 4');
     }
     for (var i = 0; i < arrayLength; i++) {
-      form.getTextField('Nahwaffe_Name_Anzeige_' + (i + 1)).setText(combat_meleeweapon[i].name + '');
-      form.getTextField('Nah_Kampftechnik_Name_Anzeige_' + (i + 1)).setText(combat_meleeweapon[i].system.combatskill.value + '');
-      form.getTextField('Nah_Schadensbonus_' + (i + 1)).setText((combat_meleeweapon[i].system.guidevalue.value + '').toUpperCase());
-      form.getTextField('Nah_Schadensschwelle_' + (i + 1)).setText(combat_meleeweapon[i].system.damageThreshold.value + '');
-      form.getTextField('Nah_TP_Wurf_' + (i + 1)).setText(combat_meleeweapon[i].system.damage.value + '');
-      form.getTextField('Nah_TP_Basis_' + (i + 1)).setText(''); //follow up
-      form.getTextField('Nah_TP_' + (i + 1)).setText(''); //follow up
-      form.getTextField('Nah_AT_Mod_' + (i + 1)).setText(combat_meleeweapon[i].system.atmod.value + '');
-      form.getTextField('Nah_PA_Mod_' + (i + 1)).setText(combat_meleeweapon[i].system.pamod.value + '');
+      form.getTextField('Nahwaffe_Name_Anzeige_' + (i + 1)).setText((combat_meleeweapon[i].name + '').normalize('NFC'));
+      form.getTextField('Nah_Kampftechnik_Name_Anzeige_' + (i + 1)).setText((combat_meleeweapon[i].system.combatskill.value + '').normalize('NFC'));
+      form.getTextField('Nah_Schadensbonus_' + (i + 1)).setText((combat_meleeweapon[i].system.guidevalue.value + '').toUpperCase().normalize('NFC'));
+      form.getTextField('Nah_Schadensschwelle_' + (i + 1)).setText((combat_meleeweapon[i].system.damageThreshold.value + '').normalize('NFC'));
+      form.getTextField('Nah_TP_Wurf_' + (i + 1)).setText((combat_meleeweapon[i].system.damage.value + '').normalize('NFC'));
+      form.getTextField('Nah_TP_Basis_' + (i + 1)).setText(''.normalize('NFC')); //follow up
+      form.getTextField('Nah_TP_' + (i + 1)).setText(''.normalize('NFC')); //follow up
+      form.getTextField('Nah_AT_Mod_' + (i + 1)).setText((combat_meleeweapon[i].system.atmod.value + '').normalize('NFC'));
+      form.getTextField('Nah_PA_Mod_' + (i + 1)).setText((combat_meleeweapon[i].system.pamod.value + '').normalize('NFC'));
       var reach_translate = combat_meleeweapon[i].system.reach.value;
       switch (reach_translate) {
         case 'short':
@@ -681,10 +681,10 @@ async function fillForm(dsa_actor_id) {
           break;
       }
 
-      form.getTextField('Nah_Reichweite_' + (i + 1)).setText(reach_translate);
-      form.getTextField('Nah_AT_' + (i + 1)).setText(eval('r_' + combat_meleeweapon[i].system.combatskill.value + '.r_AT') + Number(combat_meleeweapon[i].system.atmod.value) + '');
-      form.getTextField('Nah_PA_' + (i + 1)).setText(eval('r_' + combat_meleeweapon[i].system.combatskill.value + '.r_PA') + Number(combat_meleeweapon[i].system.pamod.value) + '');
-      form.getTextField('Nah_Gewicht_' + (i + 1)).setText(combat_meleeweapon[i].system.weight.value + '');
+      form.getTextField('Nah_Reichweite_' + (i + 1)).setText(reach_translate.normalize('NFC'));
+      form.getTextField('Nah_AT_' + (i + 1)).setText((eval('r_' + combat_meleeweapon[i].system.combatskill.value + '.r_AT') + Number(combat_meleeweapon[i].system.atmod.value) + '').normalize('NFC'));
+      form.getTextField('Nah_PA_' + (i + 1)).setText((eval('r_' + combat_meleeweapon[i].system.combatskill.value + '.r_PA') + Number(combat_meleeweapon[i].system.pamod.value) + '').normalize('NFC'));
+      form.getTextField('Nah_Gewicht_' + (i + 1)).setText((combat_meleeweapon[i].system.weight.value + '').normalize('NFC'));
     }
 
     /** range weapon   */
@@ -696,14 +696,14 @@ async function fillForm(dsa_actor_id) {
       ui.notifications.warn('You have equipped more than 4 range weapons! The template can only hold a maximum of 4');
     }
     for (var i = 0; i < arrayLength; i++) {
-      form.getTextField('Fernwaffe_Name_Anzeige_' + (i + 1)).setText(combat_rangeweapon[i].name + '');
-      form.getTextField('Fern_Kampftechnik_Name_Anzeige_' + (i + 1)).setText(combat_rangeweapon[i].system.combatskill.value + '');
-      form.getTextField('Fern_Ladezeit_' + (i + 1)).setText(combat_rangeweapon[i].system.reloadTime.value + ' Runden');
-      form.getTextField('Fern_TP_' + (i + 1)).setText(combat_rangeweapon[i].system.damage.value + '');
-      form.getTextField('Fern_Munition_' + (i + 1)).setText(combat_rangeweapon[i].system.quantity.value + '');
-      form.getTextField('Fern_Reichweite_' + (i + 1)).setText(combat_rangeweapon[i].system.reach.value + '');
-      form.getTextField('Fern_FK_' + (i + 1)).setText(eval('r_' + combat_rangeweapon[i].system.combatskill.value + '.r_AT') + '');
-      form.getTextField('Fern_Gewicht_' + (i + 1)).setText(combat_rangeweapon[i].system.weight.value + '');
+      form.getTextField('Fernwaffe_Name_Anzeige_' + (i + 1)).setText((combat_rangeweapon[i].name + '').normalize('NFC'));
+      form.getTextField('Fern_Kampftechnik_Name_Anzeige_' + (i + 1)).setText((combat_rangeweapon[i].system.combatskill.value + '').normalize('NFC'));
+      form.getTextField('Fern_Ladezeit_' + (i + 1)).setText((combat_rangeweapon[i].system.reloadTime.value + ' Runden').normalize('NFC'));
+      form.getTextField('Fern_TP_' + (i + 1)).setText((combat_rangeweapon[i].system.damage.value + '').normalize('NFC'));
+      form.getTextField('Fern_Munition_' + (i + 1)).setText((combat_rangeweapon[i].system.quantity.value + '').normalize('NFC'));
+      form.getTextField('Fern_Reichweite_' + (i + 1)).setText((combat_rangeweapon[i].system.reach.value + '').normalize('NFC'));
+      form.getTextField('Fern_FK_' + (i + 1)).setText((eval('r_' + combat_rangeweapon[i].system.combatskill.value + '.r_AT') + '').normalize('NFC'));
+      form.getTextField('Fern_Gewicht_' + (i + 1)).setText((combat_rangeweapon[i].system.weight.value + '').normalize('NFC'));
     }
 
     /** armor */
@@ -715,12 +715,12 @@ async function fillForm(dsa_actor_id) {
       ui.notifications.warn('You have equipped more than 4 armors! The template can only hold a maximum of 4');
     }
     for (var i = 0; i < arrayLength; i++) {
-      form.getTextField('Ruestung_Name_Anzeige_' + (i + 1)).setText(combat_armor[i].name + '');
-      form.getTextField('Ruestung_RS_' + (i + 1)).setText(combat_armor[i].system.protection.value + '');
-      form.getTextField('Ruestung_BE_' + (i + 1)).setText(combat_armor[i].system.encumbrance.value + '');
-      form.getTextField('Ruestung_Abzuege_' + (i + 1)).setText(combat_armor[i].system.effect.value + '');
-      form.getTextField('Ruestung_Gewicht_' + (i + 1)).setText(combat_armor[i].system.weight.value + '');
-      form.getTextField('Ruestung_Gebiet_' + (i + 1)).setText('');
+      form.getTextField('Ruestung_Name_Anzeige_' + (i + 1)).setText((combat_armor[i].name + '').normalize('NFC'));
+      form.getTextField('Ruestung_RS_' + (i + 1)).setText((combat_armor[i].system.protection.value + '').normalize('NFC'));
+      form.getTextField('Ruestung_BE_' + (i + 1)).setText((combat_armor[i].system.encumbrance.value + '').normalize('NFC'));
+      form.getTextField('Ruestung_Abzuege_' + (i + 1)).setText((combat_armor[i].system.effect.value + '').normalize('NFC'));
+      form.getTextField('Ruestung_Gewicht_' + (i + 1)).setText((combat_armor[i].system.weight.value + '').normalize('NFC'));
+      form.getTextField('Ruestung_Gebiet_' + (i + 1)).setText(''.normalize('NFC'));
     }
 
     /** shields and parry weapon */
@@ -735,10 +735,10 @@ async function fillForm(dsa_actor_id) {
       ui.notifications.warn('You have equipped more than 4 shields or parry weapons! The template can only hold a maximum of 4');
     }
     for (var i = 0; i < arrayLength; i++) {
-      form.getTextField('Schild_Name_Anzeige_' + (i + 1)).setText(combat_shields[i].name + '');
-      form.getTextField('Schild_SP_' + (i + 1)).setText(combat_shields[i].system.structure.value + ' / ' + combat_shields[i].system.structure.max);
-      form.getTextField('Schild_Mod_' + (i + 1)).setText('AT:' + combat_shields[i].system.atmod.value + ' / PA:' + combat_shields[i].system.pamod.value);
-      form.getTextField('Schild_Gewicht_' + (i + 1)).setText(combat_shields[i].system.weight.value + '');
+      form.getTextField('Schild_Name_Anzeige_' + (i + 1)).setText((combat_shields[i].name + '').normalize('NFC'));
+      form.getTextField('Schild_SP_' + (i + 1)).setText((combat_shields[i].system.structure.value + ' / ' + combat_shields[i].system.structure.max).normalize('NFC'));
+      form.getTextField('Schild_Mod_' + (i + 1)).setText(('AT:' + combat_shields[i].system.atmod.value + ' / PA:' + combat_shields[i].system.pamod.value).normalize('NFC'));
+      form.getTextField('Schild_Gewicht_' + (i + 1)).setText((combat_shields[i].system.weight.value + '').normalize('NFC'));
     }
 
     /** Items */
@@ -759,17 +759,17 @@ async function fillForm(dsa_actor_id) {
       } else {
         var quantity = '';
       }
-      form.getTextField('Besitz_Name_' + (i + 1)).setText(quantity + items[i].name + '');
-      form.getTextField('Besitz_Gewicht_' + (i + 1)).setText(items[i].system.weight.value + '');
+      form.getTextField('Besitz_Name_' + (i + 1)).setText((quantity + items[i].name + '').normalize('NFC'));
+      form.getTextField('Besitz_Gewicht_' + (i + 1)).setText((items[i].system.weight.value + '').normalize('NFC'));
       if (i <= 36) {
         sum_weight1 = sum_weight1 + Number(items[i].system.weight.value);
       } else {
         sum_weight2 = sum_weight2 + Number(items[i].system.weight.value);
       }
     }
-    form.getTextField('Gewicht_1').setText(Math.round(sum_weight1 * 100) / 100 + '');
-    form.getTextField('Gewicht_2').setText(Math.round((sum_weight1 + sum_weight2) * 100) / 100 + '');
-    form.getTextField('Trag_1').setText(Number(entity.system.characteristics.kk.value) * 2 + '');
+    form.getTextField('Gewicht_1').setText((Math.round(sum_weight1 * 100) / 100 + '').normalize('NFC'));
+    form.getTextField('Gewicht_2').setText((Math.round((sum_weight1 + sum_weight2) * 100) / 100 + '').normalize('NFC'));
+    form.getTextField('Trag_1').setText((Number(entity.system.characteristics.kk.value) * 2 + '').normalize('NFC'));
 
     /** Mage */
     /** spells */
@@ -780,47 +780,47 @@ async function fillForm(dsa_actor_id) {
       ui.notifications.warn('You have more than 40 spells! The template can only hold a maximum of 40');
     }
     for (var i = 0; i < arrayLength; i++) {
-      form.getTextField('Zauber_Anzeige_' + (i + 1)).setText(combat_spells[i].name + '');
+      form.getTextField('Zauber_Anzeige_' + (i + 1)).setText((combat_spells[i].name + '').normalize('NFC'));
       form
         .getTextField('Z_Probe_' + (i + 1))
         .setText(
-          combat_spells[i].system.characteristic1.value.toUpperCase() +
+          (combat_spells[i].system.characteristic1.value.toUpperCase() +
           ' / ' +
           combat_spells[i].system.characteristic2.value.toUpperCase() +
           ' / ' +
           combat_spells[i].system.characteristic3.value.toUpperCase() +
-          ''
+          '').normalize('NFC')
         );
-      form.getTextField('Z_FW_' + (i + 1)).setText(combat_spells[i].system.talentValue.value + '');
-      form.getTextField('Z_AsP_' + (i + 1)).setText(combat_spells[i].system.AsPCost.value + '');
-      form.getTextField('Z_ZDauer_' + (i + 1)).setText(combat_spells[i].system.castingTime.value + '');
-      form.getTextField('Z_RW_' + (i + 1)).setText(combat_spells[i].system.range.value + '');
-      form.getTextField('Z_WDauer_' + (i + 1)).setText(combat_spells[i].system.duration.value + '');
-      form.getTextField('Z_Merkmal_' + (i + 1)).setText('');
-      form.getTextField('Z_SF_' + (i + 1)).setText(combat_spells[i].system.StF.value + '');
-      form.getTextField('Z_Wirkung_' + (i + 1)).setText(combat_spells[i].system.effect.value + '');
-      form.getTextField('Z_Seite_' + (i + 1)).setText('');
+      form.getTextField('Z_FW_' + (i + 1)).setText((combat_spells[i].system.talentValue.value + '').normalize('NFC'));
+      form.getTextField('Z_AsP_' + (i + 1)).setText((combat_spells[i].system.AsPCost.value + '').normalize('NFC'));
+      form.getTextField('Z_ZDauer_' + (i + 1)).setText((combat_spells[i].system.castingTime.value + '').normalize('NFC'));
+      form.getTextField('Z_RW_' + (i + 1)).setText((combat_spells[i].system.range.value + '').normalize('NFC'));
+      form.getTextField('Z_WDauer_' + (i + 1)).setText((combat_spells[i].system.duration.value + '').normalize('NFC'));
+      form.getTextField('Z_Merkmal_' + (i + 1)).setText(''.normalize('NFC'));
+      form.getTextField('Z_SF_' + (i + 1)).setText((combat_spells[i].system.StF.value + '').normalize('NFC'));
+      form.getTextField('Z_Wirkung_' + (i + 1)).setText((combat_spells[i].system.effect.value + '').normalize('NFC'));
+      form.getTextField('Z_Seite_' + (i + 1)).setText(''.normalize('NFC'));
     }
 
-    form.getTextField('AE_Max_2').setText(String(baseAE));
+    form.getTextField('AE_Max_2').setText(String(baseAE).normalize('NFC'));
     if (baseAE !== actualAE) {
-      form.getTextField('AE_Aktuell').setText(String(actualAE));
+      form.getTextField('AE_Aktuell').setText(String(actualAE).normalize('NFC'));
     }
-    form.getTextField('Held_Tradition_magisch').setText(entity.system.tradition.magical + '');
-    form.getTextField('Leit_Magie_Ansicht').setText(Leitwert_long(entity.system.guidevalue.magical) + '');
-    form.getTextField('Held_Merkmale').setText(Leitwert_long(entity.system.feature.magical) + '');
+    form.getTextField('Held_Tradition_magisch').setText((entity.system.tradition.magical + '').normalize('NFC'));
+    form.getTextField('Leit_Magie_Ansicht').setText((Leitwert_long(entity.system.guidevalue.magical) + '').normalize('NFC'));
+    form.getTextField('Held_Merkmale').setText((Leitwert_long(entity.system.feature.magical) + '').normalize('NFC'));
 
     /** magictrick */
     const combat_magictrick = map.filter((value) => value.type === 'magictrick');
     var f_combat_magictrick = Array.from(combat_magictrick.values(), (value) => value.name).join(', ');
 
-    form.getTextField('Held_Tricks').setText(f_combat_magictrick);
+    form.getTextField('Held_Tricks').setText(f_combat_magictrick.normalize('NFC'));
 
     /** special_magic */
     const special_magic = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'magical');
     var f_special_magic = Array.from(special_magic.values(), (value) => value.name).join(', ');
 
-    form.getTextField('Held_SF_Mag').setText(f_special_magic);
+    form.getTextField('Held_SF_Mag').setText(f_special_magic.normalize('NFC'));
 
     /** Cleric */
     /** liturgy */
@@ -832,47 +832,47 @@ async function fillForm(dsa_actor_id) {
     }
 
     for (var i = 0; i < arrayLength; i++) {
-      form.getTextField('Liturgie_Anzeige_' + (i + 1)).setText(combat_liturgy[i].name + '');
+      form.getTextField('Liturgie_Anzeige_' + (i + 1)).setText((combat_liturgy[i].name + '').normalize('NFC'));
       form
         .getTextField('L_Probe_' + (i + 1))
         .setText(
-          combat_liturgy[i].system.characteristic1.value.toUpperCase() +
+          (combat_liturgy[i].system.characteristic1.value.toUpperCase() +
           ' / ' +
           combat_liturgy[i].system.characteristic2.value.toUpperCase() +
           ' / ' +
           combat_liturgy[i].system.characteristic3.value.toUpperCase() +
-          ''
+          '').normalize('NFC')
         );
-      form.getTextField('L_FW_' + (i + 1)).setText(combat_liturgy[i].system.talentValue.value + '');
-      form.getTextField('L_KaP_' + (i + 1)).setText(combat_liturgy[i].system.AsPCost.value + '');
-      form.getTextField('L_LDauer_' + (i + 1)).setText(combat_liturgy[i].system.castingTime.value + '');
-      form.getTextField('L_RW_' + (i + 1)).setText(combat_liturgy[i].system.range.value + '');
-      form.getTextField('L_WDauer_' + (i + 1)).setText(combat_liturgy[i].system.duration.value + '');
-      form.getTextField('L_Aspekt_' + (i + 1)).setText('');
-      form.getTextField('L_SF_' + (i + 1)).setText(combat_liturgy[i].system.StF.value + '');
-      form.getTextField('L_Wirkung_' + (i + 1)).setText(combat_liturgy[i].system.effect.value + '');
-      form.getTextField('L_Seite_' + (i + 1)).setText('');
+      form.getTextField('L_FW_' + (i + 1)).setText((combat_liturgy[i].system.talentValue.value + '').normalize('NFC'));
+      form.getTextField('L_KaP_' + (i + 1)).setText((combat_liturgy[i].system.AsPCost.value + '').normalize('NFC'));
+      form.getTextField('L_LDauer_' + (i + 1)).setText((combat_liturgy[i].system.castingTime.value + '').normalize('NFC'));
+      form.getTextField('L_RW_' + (i + 1)).setText((combat_liturgy[i].system.range.value + '').normalize('NFC'));
+      form.getTextField('L_WDauer_' + (i + 1)).setText((combat_liturgy[i].system.duration.value + '').normalize('NFC'));
+      form.getTextField('L_Aspekt_' + (i + 1)).setText(''.normalize('NFC'));
+      form.getTextField('L_SF_' + (i + 1)).setText((combat_liturgy[i].system.StF.value + '').normalize('NFC'));
+      form.getTextField('L_Wirkung_' + (i + 1)).setText((combat_liturgy[i].system.effect.value + '').normalize('NFC'));
+      form.getTextField('L_Seite_' + (i + 1)).setText(''.normalize('NFC'));
     }
 
-    form.getTextField('KE_Max_2').setText(String(baseKE));
+    form.getTextField('KE_Max_2').setText(String(baseKE).normalize('NFC'));
     if (baseKE !== actualKE) {
-      form.getTextField('KE_Aktuell').setText(String(actualKE));
+      form.getTextField('KE_Aktuell').setText(String(actualKE).normalize('NFC'));
     }
-    form.getTextField('Held_Tradition_klerikal').setText(entity.system.tradition.clerical + '');
-    form.getTextField('Leit_Karma_Anzeige').setText(Leitwert_long(entity.system.guidevalue.clerical) + '');
-    form.getTextField('Held_Aspekt').setText(Leitwert_long(entity.system.feature.clerical) + '');
+    form.getTextField('Held_Tradition_klerikal').setText((entity.system.tradition.clerical + '').normalize('NFC'));
+    form.getTextField('Leit_Karma_Anzeige').setText((Leitwert_long(entity.system.guidevalue.clerical) + '').normalize('NFC'));
+    form.getTextField('Held_Aspekt').setText((Leitwert_long(entity.system.feature.clerical) + '').normalize('NFC'));
 
     /** blessing */
     const combat_blessing = map.filter((value) => value.type === 'blessing');
     var f_combat_blessing = Array.from(combat_blessing.values(), (value) => value.name).join(', ');
 
-    form.getTextField('Held_Segen').setText(f_combat_blessing);
+    form.getTextField('Held_Segen').setText(f_combat_blessing.normalize('NFC'));
 
     /** special_cleric */
     const special_cleric = map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'clerical');
     var f_special_cleric = Array.from(special_cleric.values(), (value) => value.name).join(', ');
 
-    form.getTextField('Held_SF_Karm').setText(f_special_cleric);
+    form.getTextField('Held_SF_Karm').setText(f_special_cleric.normalize('NFC'));
 
     /** set PDF Metadata for PDF*/
     pdfDoc.setTitle('DSA5-' + entity.name + '.pdf created on ' + today);
