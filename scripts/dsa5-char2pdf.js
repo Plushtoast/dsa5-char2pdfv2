@@ -5,7 +5,6 @@ var modul_version = '';
 /**
  * A class which holds some constants for dsa-char2pdf
  */
-
 class dsa5char2pdf {
   static ID = 'dsa5-char2pdfv2';
 
@@ -33,57 +32,185 @@ class dsa5char2pdf {
   }
 }
 
-/** Fuction Roman Numeral Converter by Steven Levithan
- * https://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
+/**
+ * Utility functions for Roman numeral conversion
  */
+class RomanNumerals {
+  static romanize(num) {
+    num = Number(num);
+    if (!Number.isInteger(num) || num <= 0) return false;
+    
+    const romanNumerals = [
+      ['M', 1000], ['CM', 900], ['D', 500], ['CD', 400],
+      ['C', 100], ['XC', 90], ['L', 50], ['XL', 40],
+      ['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1],
+    ];
+    
+    let result = '';
+    for (const [roman, value] of romanNumerals) {
+      while (num >= value) {
+        result += roman;
+        num -= value;
+      }
+    }
+    return result;
+  }
 
-function romanize(num) {
-  num = Number(num);
-  if (!Number.isInteger(num) || num <= 0) return false;
-  const romanNumerals = [
-    ['M', 1000],
-    ['CM', 900],
-    ['D', 500],
-    ['CD', 400],
-    ['C', 100],
-    ['XC', 90],
-    ['L', 50],
-    ['XL', 40],
-    ['X', 10],
-    ['IX', 9],
-    ['V', 5],
-    ['IV', 4],
-    ['I', 1],
-  ];
-  let result = '';
-  for (const [roman, value] of romanNumerals) {
-    while (num >= value) {
-      result += roman;
-      num -= value;
+  static deromanize(str) {
+    const upperStr = str.toUpperCase();
+    const validator = /^M*(?:D?C{0,3}|C[MD])(?:L?X{0,3}|X[CL])(?:V?I{0,3}|I[XV])$/;
+    const token = /[MDLV]|C[MD]?|X[CL]?|I[XV]?/g;
+    const key = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
+    
+    if (!(upperStr && validator.test(upperStr))) return false;
+    
+    let num = 0;
+    let match;
+    while ((match = token.exec(upperStr))) {
+      num += key[match[0]];
+    }
+    return num;
+  }
+}
+
+/**
+ * Image conversion utility
+ */
+class ImageConverter {
+  static async toDataUrl(src, outputFormat = 'image/png') {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL(outputFormat));
+      };
+      img.onerror = reject;
+      img.src = src;
+      if (img.complete) {
+        img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+        img.src = src;
+      }
+    });
+  }
+
+  static async getActorPicture(src) {
+    try {
+      return await this.toDataUrl(src);
+    } catch (error) {
+      console.error('ERROR getting actor picture:', error);
+      throw error;
     }
   }
-  return result;
 }
 
-function deromanize(str) {
-  var str = str.toUpperCase(),
-    validator = /^M*(?:D?C{0,3}|C[MD])(?:L?X{0,3}|X[CL])(?:V?I{0,3}|I[XV])$/,
-    token = /[MDLV]|C[MD]?|X[CL]?|I[XV]?/g,
-    key = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 },
-    num = 0,
-    m;
-  if (!(str && validator.test(str))) return false;
-  while ((m = token.exec(str))) num += key[m[0]];
-  return num;
+/**
+ * Utility functions for character data
+ */
+class CharacterUtils {
+  static getLeitwertLong(shortCode) {
+    const mapping = {
+      MU: 'Mut',
+      KL: 'Klugheit',
+      IN: 'Intuition',
+      CH: 'Charisma',
+      FF: 'Fingerfertigkeit',
+      GE: 'Gewandheit',
+      KO: 'Konstitution',
+      KK: 'Körperkraft',
+    };
+    return mapping[shortCode.toUpperCase()] || shortCode;
+  }
+
+  static getCurrentDate() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    return `${dd}.${mm}.${yyyy}`;
+  }
+
+  static translateReach(reach) {
+    const translations = {
+      'short': 'kurz',
+      'long': 'lang'
+    };
+    return translations[reach] || reach;
+  }
 }
 
-/** register our module's debug flag with developer mode's custom hook */
+/**
+ * Configuration constants
+ */
+class Config {
+  static TALENT_MAPPING = {
+    // Body talents
+    'Fliegen': 1, 'Gaukeleien': 2, 'Klettern': 3, 'Körperbeherrschung': 4,
+    'Kraftakt': 5, 'Reiten': 6, 'Schwimmen': 7, 'Selbstbeherrschung': 8,
+    'Singen': 9, 'Sinnesschärfe': 10, 'Tanzen': 11, 'Taschendiebstahl': 12,
+    'Verbergen': 13, 'Zechen': 14,
+    // Society talents
+    'Bekehren & Überzeugen': 15, 'Betören': 16, 'Einschüchtern': 17,
+    'Etikette': 18, 'Gassenwissen': 19, 'Menschenkenntnis': 20,
+    'Überreden': 21, 'Verkleiden': 22, 'Willenskraft': 23,
+    // Nature talents
+    'Fährtensuchen': 24, 'Fesseln': 25, 'Fischen & Angeln': 26,
+    'Orientierung': 27, 'Pflanzenkunde': 28, 'Tierkunde': 29, 'Wildnisleben': 30,
+    // Knowledge talents
+    'Brett- & Glücksspiel': 31, 'Geographie': 32, 'Geschichtswissen': 33,
+    'Götter & Kulte': 34, 'Kriegskunst': 35, 'Magiekunde': 36,
+    'Mechanik': 37, 'Rechnen': 38, 'Rechtskunde': 39, 'Sagen & Legenden': 40,
+    'Sphärenkunde': 41, 'Sternkunde': 42,
+    // Crafting talents
+    'Alchimie': 43, 'Boote & Schiffe': 44, 'Fahrzeuge': 45, 'Handel': 46,
+    'Heilkunde Gift': 47, 'Heilkunde Krankheiten': 48, 'Heilkunde Seele': 49,
+    'Heilkunde Wunden': 50, 'Holzbearbeitung': 51, 'Lebensmittelbearbeitung': 52,
+    'Lederbearbeitung': 53, 'Malen & Zeichnen': 54, 'Metallbearbeitung': 55,
+    'Musizieren': 56, 'Schlösserknacken': 57, 'Steinbearbeitung': 58,
+    'Stoffbearbeitung': 59
+  };
 
+  static COMBAT_SKILLS = {
+    'Armbrüste': { destination: 1, hasParry: false },
+    'Bögen': { destination: 2, hasParry: false },
+    'Dolche': { destination: 3, hasParry: true },
+    'Fechtwaffen': { destination: 4, hasParry: true },
+    'Hiebwaffen': { destination: 5, hasParry: true },
+    'Kettenwaffen': { destination: 6, hasParry: false },
+    'Lanzen': { destination: 7, hasParry: true },
+    'Raufen': { destination: 8, hasParry: true },
+    'Schilde': { destination: 9, hasParry: true },
+    'Schwerter': { destination: 10, hasParry: true },
+    'Stangenwaffen': { destination: 11, hasParry: true },
+    'Wurfwaffen': { destination: 12, hasParry: false },
+    'Zweihandhiebwaffen': { destination: 13, hasParry: true },
+    'Zweihandschwerter': { destination: 14, hasParry: true }
+  };
+
+  static CHARACTERISTIC_MAPPING = {
+    'MU_1': 'mu', 'KL_1': 'kl', 'IN_1': 'in', 'CH_1': 'ch',
+    'FF_1': 'ff', 'GE_1': 'ge', 'KO_1': 'ko', 'KK_1': 'kk'
+  };
+
+  static MAX_ITEMS = {
+    SHIELDS: 4,
+    ARMOR: 4,
+    RANGE_WEAPONS: 4,
+    MELEE_WEAPONS: 4,
+    SPELLS: 40,
+    LITURGY: 40,
+    INVENTORY: 72
+  };
+}
+
+/** Hook registrations */
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
   registerPackageDebugFlag(dsa5char2pdf.ID);
 });
-
-/** register Hook to Display Option within the actor context menu */
 
 Hooks.on('getActorContextOptions', (html, entryOptions) => {
   entryOptions.push({
@@ -91,10 +218,7 @@ Hooks.on('getActorContextOptions', (html, entryOptions) => {
     icon: '<i class="fas fa-tasks"></i>',
     condition: (li) => {
       const entity = game.actors.get(li.dataset.entryId);
-      //check for the right DSA5 template and for the right type
-      if (entity.type == 'character' || entity.sheet == 'ActorSheetdsa5Character') {
-        return entity.id;
-      }
+      return (entity.type === 'character' || entity.sheet === 'ActorSheetdsa5Character') ? entity.id : false;
     },
     callback: (li) => {
       const actor = game.actors.get(li.dataset.entryId);
@@ -104,8 +228,7 @@ Hooks.on('getActorContextOptions', (html, entryOptions) => {
   });
 });
 
-/** Set up FormApplication */
-
+/** Export Preferences Form */
 class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
   constructor(actor) {
     super();
@@ -128,10 +251,8 @@ class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMi
 
   async _prepareContext(_options) {
     const data = await super._prepareContext(_options);
-
     data.ID = this.actor.id;
     data.actor = this.actor.name;
-
     return data;
   }
 
@@ -143,74 +264,40 @@ class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMi
   }
 }
 
-/** Function to convert webp to png for PDF-Import */
-
-async function toDataUrl(src, outputFormat = 'image/png') {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      resolve(canvas.toDataURL(outputFormat));
-    };
-    img.onerror = reject;
-    img.src = src;
-    if (img.complete) {
-      img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-      img.src = src;
-    }
-  });
-}
-
-/** Function to get result of the async task to read the pictures from a source with the use of 'await' */
-async function get_actor_pic(src) {
-  try {
-    const result = await toDataUrl(src);
-    return result;
-  } catch (error) {
-    console.error('ERROR:');
-    console.error(error);
-  }
-}
-
 /**
- * Converts the Leitwert short into the long version
+ * Main PDF generation class
  */
-function Leitwert_long(Leitwert_short) {
-  const mapping = {
-    MU: 'Mut',
-    KL: 'Klugheit',
-    IN: 'Intuition',
-    CH: 'Charisma',
-    FF: 'Fingerfertigkeit',
-    GE: 'Gewandheit',
-    KO: 'Konstitution',
-    KK: 'Körperkraft',
-  };
-  return mapping[Leitwert_short.toUpperCase()] || Leitwert_short;
-}
-
-/**
- * Call function to fill pdf template
- */
-
 class DSACHAR2PDF {
   constructor(actorId) {
     this.actorId = actorId;
+    this.entity = null;
+    this.map = null;
+    this.form = null;
+    this.combatSkills = {};
+  }
+
+  setTextField(fieldName, value) {
+    this.form.getTextField(fieldName).setText(String(value).normalize('NFC'));
+  }
+
+  findItemByName(name, type) {
+    return this.map.find(item => item.type === type && item.name === name);
+  }
+
+  filterItems(type, additionalFilter = null) {
+    let filtered = this.map.filter(item => item.type === type);
+    return additionalFilter ? filtered.filter(additionalFilter) : filtered;
   }
 
   combat(name, destination, hasParry) {
-    const skill = this.entity.items.find(item => item.type === 'combatskill' && item.name === name);
+    const skill = this.findItemByName(name, 'combatskill');
     if (!skill) return { r_AT: 0, r_PA: 0 };
 
     const combatskillData = game.dsa5.dataModels.Item.combatskill._calculateCombatSkillValues(skill, this.entity.system);
 
     this.setTextField(`KT_FW_${destination}`, combatskillData.system.talentValue.value);
     this.setTextField(`KT_AT_${destination}`, combatskillData.system.attack.value);
+    
     if (hasParry) {
       this.setTextField(`KT_PA_${destination}`, combatskillData.system.parry.value);
     }
@@ -221,13 +308,12 @@ class DSACHAR2PDF {
     };
   }
 
-  talent(name, destination) {
-    const skillItems = this.map.filter(item => item.type === 'skill' && item.name === name);
-    if (!skillItems.length) return;
+  processTalent(name, destination) {
+    const skill = this.findItemByName(name, 'skill');
+    if (!skill) return;
 
-    const skill = skillItems[0];
     const talentValue = skill.system.talentValue.value;
-    this.setTextField('Talent_FW_' + destination, talentValue);
+    this.setTextField(`Talent_FW_${destination}`, talentValue);
 
     const charNames = [
       skill.system.characteristic1.value,
@@ -236,63 +322,53 @@ class DSACHAR2PDF {
     ];
     const charValues = charNames.map(n => this.entity.system.characteristics[n]?.value ?? 0);
 
-    let routine = '';
+    // Calculate routine modifier
     if (charValues.every(v => v >= 13)) {
-      if (talentValue >= 1 && talentValue < 4) routine = '+3';
-      else if (talentValue >= 4 && talentValue < 7) routine = '+2';
-      else if (talentValue >= 7 && talentValue < 10) routine = '+1';
-      else if (talentValue >= 10 && talentValue < 13) routine = '0';
-      else if (talentValue >= 13 && talentValue < 16) routine = '-1';
-      else if (talentValue >= 16 && talentValue < 19) routine = '-2';
-      else if (talentValue >= 19) routine = '-3';
+      const routineModifiers = [
+        [1, 4, '+3'], [4, 7, '+2'], [7, 10, '+1'], [10, 13, '0'],
+        [13, 16, '-1'], [16, 19, '-2'], [19, Infinity, '-3']
+      ];
+      
+      const routine = routineModifiers.find(([min, max]) => talentValue >= min && talentValue < max)?.[2] || '';
+      // Use routine if needed
     }
   }
 
-  coins(currencyName, fieldShort) {
-    const currencyItems = this.map.filter(item => item.name === currencyName);
+  processCoins(currencyName, fieldShort) {
+    const currencyItems = this.filterItems('equipment', item => item.name === currencyName);
     const total = currencyItems.reduce((sum, item) => sum + Number(item.system.quantity.value), 0);
-    this.setTextField('Geld_' + fieldShort, total);
-  }
-
-  setTextField(fieldName, value) {
-    this.form.getTextField(fieldName).setText(String(value).normalize('NFC'));
+    this.setTextField(`Geld_${fieldShort}`, total);
   }
 
   fillCharacterDetails() {
     const details = this.entity.system.details;
+    const fieldMappings = {
+      'Held_Name': this.entity.name,
+      'Held_Geschlecht': details.gender.value,
+      'Held_Spezies_Anzeige': details.species.value,
+      'Held_Geburtsdatum': '',
+      'Held_Alter': details.age.value,
+      'Held_Haare': details.haircolor.value,
+      'Held_Augen': details.eyecolor.value,
+      'Held_Groesse': details.height.value,
+      'Held_Gewicht': details.weight.value,
+      'Held_Profession_Anzeige': details.career.value,
+      'Held_Kultur_Anzeige': details.culture.value,
+      'Held_Sozialstatus': details.socialstate.value,
+      'Held_Geburtsort': details.Home.value,
+      'Held_Familie': details.family.value,
+      'Held_Charakteristika': details.distinguishingmark.value,
+    };
 
-    this.setTextField('Held_Name', this.entity.name);
-    this.setTextField('Held_Geschlecht', details.gender.value);
-    this.setTextField('Held_Spezies_Anzeige', details.species.value);
-    this.setTextField('Held_Geburtsdatum', '');
-    this.setTextField('Held_Alter', details.age.value);
-    this.setTextField('Held_Haare', details.haircolor.value);
-    this.setTextField('Held_Augen', details.eyecolor.value);
-    this.setTextField('Held_Groesse', details.height.value);
-    this.setTextField('Held_Gewicht', details.weight.value);
-    this.setTextField('Held_Profession_Anzeige', details.career.value);
-    this.setTextField('Held_Kultur_Anzeige', details.culture.value);
-    this.setTextField('Held_Sozialstatus', details.socialstate.value);
-    this.setTextField('Held_Geburtsort', details.Home.value);
-    this.setTextField('Held_Familie', details.family.value);
-    this.setTextField('Held_Charakteristika', details.distinguishingmark.value);
+    Object.entries(fieldMappings).forEach(([field, value]) => {
+      this.setTextField(field, value);
+    });
   }
 
   fillActorMainAttributes() {
     const characteristics = this.entity.system.characteristics;
-    const charMap = {
-      'MU_1': characteristics.mu.value,
-      'KL_1': characteristics.kl.value,
-      'IN_1': characteristics.in.value,
-      'CH_1': characteristics.ch.value,
-      'FF_1': characteristics.ff.value,
-      'GE_1': characteristics.ge.value,
-      'KO_1': characteristics.ko.value,
-      'KK_1': characteristics.kk.value
-    };
-
-    Object.entries(charMap).forEach(([fieldName, value]) => {
-      this.setTextField(fieldName, value);
+    Object.entries(Config.CHARACTERISTIC_MAPPING).forEach(([fieldName, charKey]) => {
+      this.setTextField(fieldName, characteristics[charKey].value);
     });
   }
 
@@ -307,14 +383,21 @@ class DSACHAR2PDF {
 
   setLifeFields() {
     const wounds = this.entity.system.status.wounds;
-    this.setTextField('LE_Max_1', wounds.max);
-    this.setTextField('LE_Max_3', wounds.max);
-    this.setTextField('LE_Wert_1', wounds.current);
+    const fieldMappings = {
+      'LE_Max_1': wounds.max,
+      'LE_Max_3': wounds.max,
+      'LE_Wert_1': wounds.current,
+      'LE_Kauf_1': wounds.advances,
+      'LE_BM_1': wounds.modifier,
+    };
+
+    Object.entries(fieldMappings).forEach(([field, value]) => {
+      this.setTextField(field, value);
+    });
+
     if (wounds.max !== wounds.value) {
       this.setTextField('LE_Aktuell_1', wounds.value);
     }
-    this.setTextField('LE_Kauf_1', wounds.advances);
-    this.setTextField('LE_BM_1', wounds.modifier);
   }
 
   setSoulpowerFields() {
@@ -341,7 +424,6 @@ class DSACHAR2PDF {
   setAstralEnergyFields() {
     const astralenergy = this.entity.system.status.astralenergy;
     this.setTextField('AE_Max_1', astralenergy.max);
-    // Property "current" is only the "Leiteigenschaft" without the 20AsP basis
     this.setTextField('AE_Wert_1', astralenergy.current + 20);
     this.setTextField('AE_Kauf_1', astralenergy.advances);
     this.setTextField('AE_BM_1', astralenergy.modifier);
@@ -350,530 +432,378 @@ class DSACHAR2PDF {
   setKarmaEnergyFields() {
     const karmaenergy = this.entity.system.status.karmaenergy;
     this.setTextField('KE_Max_1', karmaenergy.max);
-    // Property "current" is only the "Leiteigenschaft" without the 20KsP basis
     this.setTextField('KE_Wert_1', karmaenergy.current + 20);
     this.setTextField('KE_Kauf_1', karmaenergy.advances);
     this.setTextField('KE_BM_1', karmaenergy.modifier);
   }
 
   setTalentFields() {
-    const talentConfig = {
-      // body talents
-      'Fliegen': 1,
-      'Gaukeleien': 2,
-      'Klettern': 3,
-      'Körperbeherrschung': 4,
-      'Kraftakt': 5,
-      'Reiten': 6,
-      'Schwimmen': 7,
-      'Selbstbeherrschung': 8,
-      'Singen': 9,
-      'Sinnesschärfe': 10,
-      'Tanzen': 11,
-      'Taschendiebstahl': 12,
-      'Verbergen': 13,
-      'Zechen': 14,
-      // society talents
-      'Bekehren & Überzeugen': 15,
-      'Betören': 16,
-      'Einschüchtern': 17,
-      'Etikette': 18,
-      'Gassenwissen': 19,
-      'Menschenkenntnis': 20,
-      'Überreden': 21,
-      'Verkleiden': 22,
-      'Willenskraft': 23,
-      // nature talents
-      'Fährtensuchen': 24,
-      'Fesseln': 25,
-      'Fischen & Angeln': 26,
-      'Orientierung': 27,
-      'Pflanzenkunde': 28,
-      'Tierkunde': 29,
-      'Wildnisleben': 30,
-      // knowledge talents
-      'Brett- & Glücksspiel': 31,
-      'Geographie': 32,
-      'Geschichtswissen': 33,
-      'Götter & Kulte': 34,
-      'Kriegskunst': 35,
-      'Magiekunde': 36,
-      'Mechanik': 37,
-      'Rechnen': 38,
-      'Rechtskunde': 39,
-      'Sagen & Legenden': 40,
-      'Sphärenkunde': 41,
-      'Sternkunde': 42,
-      // crafting talents
-      'Alchimie': 43,
-      'Boote & Schiffe': 44,
-      'Fahrzeuge': 45,
-      'Handel': 46,
-      'Heilkunde Gift': 47,
-      'Heilkunde Krankheiten': 48,
-      'Heilkunde Seele': 49,
-      'Heilkunde Wunden': 50,
-      'Holzbearbeitung': 51,
-      'Lebensmittelbearbeitung': 52,
-      'Lederbearbeitung': 53,
-      'Malen & Zeichnen': 54,
-      'Metallbearbeitung': 55,
-      'Musizieren': 56,
-      'Schlösserknacken': 57,
-      'Steinbearbeitung': 58,
-      'Stoffbearbeitung': 59
-    };
-
-    Object.entries(talentConfig).forEach(([talentName, destination]) => {
-      this.talent(talentName, destination);
+    Object.entries(Config.TALENT_MAPPING).forEach(([talentName, destination]) => {
+      this.processTalent(talentName, destination);
     });
   }
 
+  setEquipmentFields(itemType, namePrefix, maxItems, processFn) {
+    const items = this.filterItems(itemType, item => item.system.worn?.value === 'true');
+    const arrayLength = Math.min(items.length, maxItems);
+    
+    if (items.length > maxItems) {
+      ui.notifications.warn(`You have equipped more than ${maxItems} ${itemType}s! The template can only hold a maximum of ${maxItems}`);
+    }
+
+    for (let i = 0; i < arrayLength; i++) {
+      processFn(items[i], i + 1);
+    }
+  }
+
   setShieldFields() {
-    const combat_shields = this.map
-      .filter((value) => value.type === 'meleeweapon')
-      .filter((value) => (value.system.worn.value = 'true'))
-      .filter((value) => value.system.combatskill.value === 'Schilde');
-    var arrayLength = combat_shields.length;
-    if (arrayLength > 4) {
-      arrayLength = 4;
-      ui.notifications.warn('You have equipped more than 4 shields or parry weapons! The template can only hold a maximum of 4');
-    }
-    for (var i = 0; i < arrayLength; i++) {
-      this.setTextField('Schild_Name_Anzeige_' + (i + 1), combat_shields[i].name);
-      this.setTextField('Schild_SP_' + (i + 1), combat_shields[i].system.structure.value + ' / ' + combat_shields[i].system.structure.max);
-      this.setTextField('Schild_Mod_' + (i + 1), 'AT:' + combat_shields[i].system.atmod.value + ' / PA:' + combat_shields[i].system.pamod.value);
-      this.setTextField('Schild_Gewicht_' + (i + 1), combat_shields[i].system.weight.value);
-    }
+    this.setEquipmentFields('meleeweapon', 'Schild', Config.MAX_ITEMS.SHIELDS, (item, index) => {
+      if (item.system.combatskill.value !== 'Schilde') return;
+      
+      this.setTextField(`Schild_Name_Anzeige_${index}`, item.name);
+      this.setTextField(`Schild_SP_${index}`, `${item.system.structure.value} / ${item.system.structure.max}`);
+      this.setTextField(`Schild_Mod_${index}`, `AT:${item.system.atmod.value} / PA:${item.system.pamod.value}`);
+      this.setTextField(`Schild_Gewicht_${index}`, item.system.weight.value);
+    });
   }
 
   setArmorFields() {
-    const combat_armor = this.map.filter((value) => value.type === 'armor').filter((value) => (value.system.worn.value = 'true'));
-    var arrayLength = combat_armor.length;
-    if (arrayLength > 4) {
-      arrayLength = 4;
-      ui.notifications.warn('You have equipped more than 4 armors! The template can only hold a maximum of 4');
-    }
-    for (var i = 0; i < arrayLength; i++) {
-      this.setTextField('Ruestung_Name_Anzeige_' + (i + 1), combat_armor[i].name);
-      this.setTextField('Ruestung_RS_' + (i + 1), combat_armor[i].system.protection.value);
-      this.setTextField('Ruestung_BE_' + (i + 1), combat_armor[i].system.encumbrance.value);
-      this.setTextField('Ruestung_Abzuege_' + (i + 1), combat_armor[i].system.effect.value);
-      this.setTextField('Ruestung_Gewicht_' + (i + 1), combat_armor[i].system.weight.value);
-      this.setTextField('Ruestung_Gebiet_' + (i + 1), '');
-    }
+    this.setEquipmentFields('armor', 'Ruestung', Config.MAX_ITEMS.ARMOR, (item, index) => {
+      const fieldMappings = {
+        [`Ruestung_Name_Anzeige_${index}`]: item.name,
+        [`Ruestung_RS_${index}`]: item.system.protection.value,
+        [`Ruestung_BE_${index}`]: item.system.encumbrance.value,
+        [`Ruestung_Abzuege_${index}`]: item.system.effect.value,
+        [`Ruestung_Gewicht_${index}`]: item.system.weight.value,
+        [`Ruestung_Gebiet_${index}`]: '',
+      };
+
+      Object.entries(fieldMappings).forEach(([field, value]) => {
+        this.setTextField(field, value);
+      });
+    });
   }
 
   setRangeFields() {
-    const combat_rangeweapon = this.map.filter((value) => value.type === 'rangeweapon').filter((value) => (value.system.worn.value = 'true'));
-    var arrayLength = combat_rangeweapon.length;
-    if (arrayLength > 4) {
-      arrayLength = 4;
-      ui.notifications.warn('You have equipped more than 4 range weapons! The template can only hold a maximum of 4');
-    }
-    for (var i = 0; i < arrayLength; i++) {
-      this.setTextField('Fernwaffe_Name_Anzeige_' + (i + 1), combat_rangeweapon[i].name);
-      this.setTextField('Fern_Kampftechnik_Name_Anzeige_' + (i + 1), combat_rangeweapon[i].system.combatskill.value);
-      this.setTextField('Fern_Ladezeit_' + (i + 1), combat_rangeweapon[i].system.reloadTime.value + ' Runden');
-      this.setTextField('Fern_TP_' + (i + 1), combat_rangeweapon[i].system.damage.value);
-      this.setTextField('Fern_Munition_' + (i + 1), combat_rangeweapon[i].system.quantity.value);
-      this.setTextField('Fern_Reichweite_' + (i + 1), combat_rangeweapon[i].system.reach.value);
-      this.setTextField('Fern_FK_' + (i + 1), this.combatSkills[combat_rangeweapon[i].system.combatskill.value].r_AT);
-      this.setTextField('Fern_Gewicht_' + (i + 1), combat_rangeweapon[i].system.weight.value);
-    }
+    this.setEquipmentFields('rangeweapon', 'Fernwaffe', Config.MAX_ITEMS.RANGE_WEAPONS, (item, index) => {
+      const fieldMappings = {
+        [`Fernwaffe_Name_Anzeige_${index}`]: item.name,
+        [`Fern_Kampftechnik_Name_Anzeige_${index}`]: item.system.combatskill.value,
+        [`Fern_Ladezeit_${index}`]: `${item.system.reloadTime.value} Runden`,
+        [`Fern_TP_${index}`]: item.system.damage.value,
+        [`Fern_Munition_${index}`]: item.system.quantity.value,
+        [`Fern_Reichweite_${index}`]: item.system.reach.value,
+        [`Fern_FK_${index}`]: this.combatSkills[item.system.combatskill.value]?.r_AT || 0,
+        [`Fern_Gewicht_${index}`]: item.system.weight.value,
+      };
+
+      Object.entries(fieldMappings).forEach(([field, value]) => {
+        this.setTextField(field, value);
+      });
+    });
   }
 
   setMeleeFields() {
-    const combat_meleeweapon = this.map
-      .filter((value) => value.type === 'meleeweapon')
-      .filter((value) => (value.system.worn.value = 'true'))
-      .filter((value) => value.system.combatskill.value !== 'Schilde');
-    var arrayLength = combat_meleeweapon.length;
-    if (arrayLength > 4) {
-      arrayLength = 4;
-      ui.notifications.warn('You have equipped more than 4 melee weapons! The template can only hold a maximum of 4');
-    }
-    for (var i = 0; i < arrayLength; i++) {
-      this.setTextField('Nahwaffe_Name_Anzeige_' + (i + 1), combat_meleeweapon[i].name);
-      this.setTextField('Nah_Kampftechnik_Name_Anzeige_' + (i + 1), combat_meleeweapon[i].system.combatskill.value);
-      this.setTextField('Nah_Schadensbonus_' + (i + 1), combat_meleeweapon[i].system.guidevalue.value.toUpperCase());
-      this.setTextField('Nah_Schadensschwelle_' + (i + 1), combat_meleeweapon[i].system.damageThreshold.value);
-      this.setTextField('Nah_TP_Wurf_' + (i + 1), combat_meleeweapon[i].system.damage.value);
-      this.setTextField('Nah_TP_Basis_' + (i + 1), ''); //follow up
-      this.setTextField('Nah_TP_' + (i + 1), ''); //follow up
-      this.setTextField('Nah_AT_Mod_' + (i + 1), combat_meleeweapon[i].system.atmod.value);
-      this.setTextField('Nah_PA_Mod_' + (i + 1), combat_meleeweapon[i].system.pamod.value);
-      var reach_translate = combat_meleeweapon[i].system.reach.value;
-      switch (reach_translate) {
-        case 'short':
-          reach_translate = 'kurz';
-          break;
-        case 'long':
-          reach_translate = 'lang';
-          break;
-        default:
-          break;
-      }
+    const meleeWeapons = this.filterItems('meleeweapon', item => 
+      item.system.worn?.value === 'true' && item.system.combatskill.value !== 'Schilde'
+    );
+    
+    this.setEquipmentFields('meleeweapon', 'Nahwaffe', Config.MAX_ITEMS.MELEE_WEAPONS, (item, index) => {
+      if (item.system.combatskill.value === 'Schilde') return;
+      
+      const combatSkill = this.combatSkills[item.system.combatskill.value] || { r_AT: 0, r_PA: 0 };
+      const reach = CharacterUtils.translateReach(item.system.reach.value);
+      
+      const fieldMappings = {
+        [`Nahwaffe_Name_Anzeige_${index}`]: item.name,
+        [`Nah_Kampftechnik_Name_Anzeige_${index}`]: item.system.combatskill.value,
+        [`Nah_Schadensbonus_${index}`]: item.system.guidevalue.value.toUpperCase(),
+        [`Nah_Schadensschwelle_${index}`]: item.system.damageThreshold.value,
+        [`Nah_TP_Wurf_${index}`]: item.system.damage.value,
+        [`Nah_TP_Basis_${index}`]: '',
+        [`Nah_TP_${index}`]: '',
+        [`Nah_AT_Mod_${index}`]: item.system.atmod.value,
+        [`Nah_PA_Mod_${index}`]: item.system.pamod.value,
+        [`Nah_Reichweite_${index}`]: reach,
+        [`Nah_AT_${index}`]: combatSkill.r_AT + Number(item.system.atmod.value),
+        [`Nah_PA_${index}`]: combatSkill.r_PA + Number(item.system.pamod.value),
+        [`Nah_Gewicht_${index}`]: item.system.weight.value,
+      };
 
-      this.setTextField('Nah_Reichweite_' + (i + 1), reach_translate);
-      this.setTextField('Nah_AT_' + (i + 1), this.combatSkills[combat_meleeweapon[i].system.combatskill.value].r_AT + Number(combat_meleeweapon[i].system.atmod.value));
-      this.setTextField('Nah_PA_' + (i + 1), this.combatSkills[combat_meleeweapon[i].system.combatskill.value].r_PA + Number(combat_meleeweapon[i].system.pamod.value));
-      this.setTextField('Nah_Gewicht_' + (i + 1), combat_meleeweapon[i].system.weight.value);
-    }
+      Object.entries(fieldMappings).forEach(([field, value]) => {
+        this.setTextField(field, value);
+      });
+    });
   }
 
   setSpellFields() {
-    const combat_spells = this.map.filter((value) => ['spell', 'ritual'].includes(value.type));
-    var arrayLength = combat_spells.length;
-    if (arrayLength > 40) {
-      arrayLength = 40;
-      ui.notifications.warn('You have more than 40 spells! The template can only hold a maximum of 40');
-    }
-    for (var i = 0; i < arrayLength; i++) {
-      this.setTextField('Zauber_Anzeige_' + (i + 1), combat_spells[i].name);
-      this.setTextField('Z_Probe_' + (i + 1),
-        combat_spells[i].system.characteristic1.value.toUpperCase() +
-        ' / ' +
-        combat_spells[i].system.characteristic2.value.toUpperCase() +
-        ' / ' +
-        combat_spells[i].system.characteristic3.value.toUpperCase()
-      );
-      this.setTextField('Z_FW_' + (i + 1), combat_spells[i].system.talentValue.value);
-      this.setTextField('Z_AsP_' + (i + 1), combat_spells[i].system.AsPCost.value);
-      this.setTextField('Z_ZDauer_' + (i + 1), combat_spells[i].system.castingTime.value);
-      this.setTextField('Z_RW_' + (i + 1), combat_spells[i].system.range.value);
-      this.setTextField('Z_WDauer_' + (i + 1), combat_spells[i].system.duration.value);
-      this.setTextField('Z_Merkmal_' + (i + 1), '');
-      this.setTextField('Z_SF_' + (i + 1), combat_spells[i].system.StF.value);
-      this.setTextField('Z_Wirkung_' + (i + 1), combat_spells[i].system.effect.value);
-      this.setTextField('Z_Seite_' + (i + 1), '');
-    }
+    const spells = this.filterItems('spell').concat(this.filterItems('ritual'));
+    this.processSpellLikeItems(spells, 'Zauber', 'Z', Config.MAX_ITEMS.SPELLS);
   }
 
   setLiturgyFields() {
-    const combat_liturgy = this.map.filter((value) => ['liturgy', 'ceremony'].includes(value.type));
-    var arrayLength = combat_liturgy.length;
-    if (arrayLength > 40) {
-      arrayLength = 40;
-      ui.notifications.warn('You have more than 40 liturgys! The template can only hold a maximum of 40');
+    const liturgies = this.filterItems('liturgy').concat(this.filterItems('ceremony'));
+    this.processSpellLikeItems(liturgies, 'Liturgie', 'L', Config.MAX_ITEMS.LITURGY);
+  }
+
+  processSpellLikeItems(items, namePrefix, fieldPrefix, maxItems) {
+    const arrayLength = Math.min(items.length, maxItems);
+    
+    if (items.length > maxItems) {
+      ui.notifications.warn(`You have more than ${maxItems} ${namePrefix.toLowerCase()}s! The template can only hold a maximum of ${maxItems}`);
     }
 
-    for (var i = 0; i < arrayLength; i++) {
-      this.setTextField('Liturgie_Anzeige_' + (i + 1), combat_liturgy[i].name);
-      this.setTextField('L_Probe_' + (i + 1),
-        combat_liturgy[i].system.characteristic1.value.toUpperCase() +
-        ' / ' +
-        combat_liturgy[i].system.characteristic2.value.toUpperCase() +
-        ' / ' +
-        combat_liturgy[i].system.characteristic3.value.toUpperCase()
-      );
-      this.setTextField('L_FW_' + (i + 1), combat_liturgy[i].system.talentValue.value);
-      this.setTextField('L_KaP_' + (i + 1), combat_liturgy[i].system.AsPCost.value);
-      this.setTextField('L_LDauer_' + (i + 1), combat_liturgy[i].system.castingTime.value);
-      this.setTextField('L_RW_' + (i + 1), combat_liturgy[i].system.range.value);
-      this.setTextField('L_WDauer_' + (i + 1), combat_liturgy[i].system.duration.value);
-      this.setTextField('L_Aspekt_' + (i + 1), '');
-      this.setTextField('L_SF_' + (i + 1), combat_liturgy[i].system.StF.value);
-      this.setTextField('L_Wirkung_' + (i + 1), combat_liturgy[i].system.effect.value);
-      this.setTextField('L_Seite_' + (i + 1), '');
+    for (let i = 0; i < arrayLength; i++) {
+      const item = items[i];
+      const index = i + 1;
+      
+      const characteristics = [
+        item.system.characteristic1.value.toUpperCase(),
+        item.system.characteristic2.value.toUpperCase(),
+        item.system.characteristic3.value.toUpperCase()
+      ].join(' / ');
+
+      const fieldMappings = {
+        [`${namePrefix}_Anzeige_${index}`]: item.name,
+        [`${fieldPrefix}_Probe_${index}`]: characteristics,
+        [`${fieldPrefix}_FW_${index}`]: item.system.talentValue.value,
+        [`${fieldPrefix}_${fieldPrefix === 'Z' ? 'AsP' : 'KaP'}_${index}`]: item.system.AsPCost.value,
+        [`${fieldPrefix}_${fieldPrefix === 'Z' ? 'Z' : 'L'}Dauer_${index}`]: item.system.castingTime.value,
+        [`${fieldPrefix}_RW_${index}`]: item.system.range.value,
+        [`${fieldPrefix}_WDauer_${index}`]: item.system.duration.value,
+        [`${fieldPrefix}_${fieldPrefix === 'Z' ? 'Merkmal' : 'Aspekt'}_${index}`]: '',
+        [`${fieldPrefix}_SF_${index}`]: item.system.StF.value,
+        [`${fieldPrefix}_Wirkung_${index}`]: item.system.effect.value,
+        [`${fieldPrefix}_Seite_${index}`]: '',
+      };
+
+      Object.entries(fieldMappings).forEach(([field, value]) => {
+        this.setTextField(field, value);
+      });
     }
   }
 
-  async fillForm(dsa_actor_id) {
-    try {
-      /** declaration */
+  async processActorImage(pdfDoc) {
+    const actorImageUrl = this.entity.img;
+    let actorImageBytes;
 
-      var PDFDocument = PDFLib.PDFDocument;
-      var StandardFonts = PDFLib.StandardFonts;
-      var rgb = PDFLib.rgb;
+    if (['png', 'jpg'].includes(actorImageUrl.split('.').pop())) {
+      actorImageBytes = await fetch(actorImageUrl).then(res => res.arrayBuffer());
+    } else {
+      actorImageBytes = await ImageConverter.getActorPicture(actorImageUrl);
+    }
+
+    const actorImage = await pdfDoc.embedPng(actorImageBytes);
+    this.form.getButton('Charakterbild').setImage(actorImage);
+  }
+
+  processSpecialAbilities() {
+    const categories = {
+      disadvantage: 'Held_Nachteile',
+      advantage: 'Held_Vorteile',
+    };
+
+    Object.entries(categories).forEach(([type, field]) => {
+      const items = this.filterItems(type);
+      const names = items.map(item => item.name).join(', ');
+      this.setTextField(field, names);
+    });
+
+    // Process special abilities
+    const generalSA = this.filterItems('specialability', item => item.system.category.value === 'general');
+    const fatePointSA = this.filterItems('specialability', item => item.system.category.value === 'fatePoints');
+    
+    const generalNames = generalSA.map(item => item.name).join(', ');
+    const fatePointNames = fatePointSA.map(item => item.name).join(', ');
+    
+    const combined = `${generalNames}\n\nSchicksalspunkt SF: ${fatePointNames}`;
+    this.setTextField('Held_SF_allgemein', combined);
+  }
+
+  processLanguagesAndScripts() {
+    const languages = this.filterItems('specialability', item => 
+      item.system.category.value === 'language' && item.name.includes('Sprache')
+    );
+    const scripts = this.filterItems('specialability', item => 
+      item.system.category.value === 'language' && item.name.includes('Schrift')
+    );
+
+    const formatItems = (items) => 
+      items.map(item => `${item.name} ${RomanNumerals.romanize(item.system.step.value)}`).join(', ');
+
+    this.setTextField('Held_Sprachen', formatItems(languages));
+    this.setTextField('Held_Schriften', formatItems(scripts));
+  }
+
+  async fillForm() {
+    try {
+      const { PDFDocument, StandardFonts, rgb } = PDFLib;
 
       this.entity = await fromUuid(this.actorId);
       this.map = this.entity.items;
 
       const formUrl = dsa5char2pdf.TEMPLATES.PDF_Template;
-      const formPdfBytes = await fetch(formUrl).then((res) => res.arrayBuffer());
+      const formPdfBytes = await fetch(formUrl).then(res => res.arrayBuffer());
       const pdfDoc = await PDFDocument.load(formPdfBytes);
       this.form = pdfDoc.getForm();
 
-      /** check for modul version */
-      const ModuleAPI = game.modules.get('dsa5-char2pdfv2');
-      modul_version = ModuleAPI.version;
+      // Get module version
+      const moduleAPI = game.modules.get('dsa5-char2pdfv2');
+      modul_version = moduleAPI.version;
 
-      /** Current date in right format */
+      const today = CharacterUtils.getCurrentDate();
 
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, '0');
-      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-      var yyyy = today.getFullYear();
-      today = dd + '.' + mm + '.' + yyyy;
-
-      /** character detail */
-
+      // Fill all sections
       this.fillCharacterDetails();
-
-      /** actor picture */
-
-      const actor_image_url = this.entity.img;
-
-      if (actor_image_url.split('.').pop() === 'png' || actor_image_url.split('.').pop() === 'jpg') {
-        var actor_imageBytes = await fetch(actor_image_url).then((res) => res.arrayBuffer());
-      } else {
-        actor_imageBytes = await get_actor_pic(actor_image_url);
-      }
-      var actor_image = await pdfDoc.embedPng(actor_imageBytes);
-      this.form.getButton('Charakterbild').setImage(actor_image);
-
-      /** main attributes */
-
+      await this.processActorImage(pdfDoc);
       this.fillActorMainAttributes();
-
-      /** disadvantages */
-
-      const disadvantage = this.map.filter((value) => value.type === 'disadvantage');
-      var f_disadvantage = Array.from(disadvantage.values(), (value) => value.name).join(', ');
-      this.setTextField('Held_Nachteile', f_disadvantage);
-
-      /** advantages */
-
-      const advantage = this.map.filter((value) => value.type === 'advantage');
-      var f_advantage = Array.from(advantage.values(), (value) => value.name).join(', ');
-      this.setTextField('Held_Vorteile', f_advantage);
-
-      /** specialability */
-      let f_specialability = '';
-
-      /** - General */
-      const specialability_general = this.map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'general');
-      var f_specialability_general = Array.from(specialability_general.values(), (value) => value.name).join(', ');
-      f_specialability += f_specialability_general;
-
-      /** - Fate Points*/
-
-      const specialability_fatepoint = this.map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'fatePoints');
-      var f_specialability_fatepoints = Array.from(specialability_fatepoint.values(), (value) => value.name).join(', ');
-      f_specialability += '\n\nSchicksalspunkt SF: ' + f_specialability_fatepoints;
-
-      this.setTextField('Held_SF_allgemein', f_specialability);
-
-      /** language */
-
-      const language = this.map
-        .filter((value) => value.type === 'specialability')
-        .filter((value) => value.system.category.value === 'language')
-        .filter((value) => value.name.includes('Sprache'));
-      var f_language = Array.from(language.values(), (value) => value.name + ' ' + romanize(value.system.step.value)).join(', ');
-      this.setTextField('Held_Sprachen', f_language);
-
-      /** script */
-
-      const script = this.map
-        .filter((value) => value.type === 'specialability')
-        .filter((value) => value.system.category.value === 'language')
-        .filter((value) => value.name.includes('Schrift'));
-      var f_script = Array.from(script.values(), (value) => value.name + ' ' + romanize(value.system.step.value)).join(', ');
-      this.setTextField('Held_Schriften', f_script);
-
+      this.processSpecialAbilities();
+      this.processLanguagesAndScripts();
       this.setStatusFields();
 
-      /** experience */
-      const exp_translate = game.i18n.localize(this.entity.system.details.experience.description);
-
-      this.setTextField('AP_Erfahrungsgrad_Anzeige', exp_translate);
-
+      // Experience
+      const expTranslate = game.i18n.localize(this.entity.system.details.experience.description);
+      this.setTextField('AP_Erfahrungsgrad_Anzeige', expTranslate);
       this.setTextField('AP_gesamt', this.entity.system.details.experience.total);
       this.setTextField('AP_gesammelt', this.entity.system.details.experience.current);
       this.setTextField('AP_ausgegeben', this.entity.system.details.experience.spent);
 
-      /** fatepoints */
-
-      const base = this.entity.system.status.fatePoints.current;
-      const actual = this.entity.system.status.fatePoints.value;
-      this.setTextField('SchiP_Wert_1', base);
-      this.setTextField('SchiP_Max_1', this.entity.system.status.fatePoints.max);
-      if (base !== actual) {
-        this.setTextField('SchiP_Aktuell_1', this.entity.system.status.fatePoints.value);
+      // Fate points
+      const fatePoints = this.entity.system.status.fatePoints;
+      this.setTextField('SchiP_Wert_1', fatePoints.current);
+      this.setTextField('SchiP_Max_1', fatePoints.max);
+      if (fatePoints.current !== fatePoints.value) {
+        this.setTextField('SchiP_Aktuell_1', fatePoints.value);
       }
-      this.setTextField('SchiP_BM_1', this.entity.system.status.fatePoints.modifier);
+      this.setTextField('SchiP_BM_1', fatePoints.modifier);
 
-      /** talents */
-
+      // Talents
       this.setTalentFields();
 
-
-      /** Combat */
-      /** general */
-
+      // Combat section
       this.setTextField('LE_Max_2', this.entity.system.status.wounds.max);
-      // Don't use the max attribute of speed. It is allways 0.
+      
       const speed = this.entity.system.status.speed;
       this.setTextField('GS_Max_1', speed.initial + speed.modifier + speed.gearmodifier);
       this.setTextField('AW_Max_2', this.entity.system.status.dodge.max);
+      
       const initiative = this.entity.system.status.initiative;
+      const characteristics = this.entity.system.characteristics;
       this.setTextField('INI_Max_1',
-        Math.round((this.entity.system.characteristics.mu.value + this.entity.system.characteristics.ge.value) / 2)
-        + initiative.modifier + initiative.gearmodifier
+        Math.round((characteristics.mu.value + characteristics.ge.value) / 2) +
+        initiative.modifier + initiative.gearmodifier
       );
-      this.setTextField('AW_Max_2', this.entity.system.status.dodge.max);
       this.setTextField('SK_Max_2', this.entity.system.status.soulpower.max);
       this.setTextField('ZK_Max_2', this.entity.system.status.toughness.max);
 
-      /** Wepaons */
-      /** combat */
-
-      this.combatSkills = {};
-      
-      const combatSkillsConfig = {
-        'Armbrüste': { destination: 1, hasParry: false },
-        'Bögen': { destination: 2, hasParry: false },
-        'Dolche': { destination: 3, hasParry: true },
-        'Fechtwaffen': { destination: 4, hasParry: true },
-        'Hiebwaffen': { destination: 5, hasParry: true },
-        'Kettenwaffen': { destination: 6, hasParry: false },
-        'Lanzen': { destination: 7, hasParry: true },
-        'Raufen': { destination: 8, hasParry: true },
-        'Schilde': { destination: 9, hasParry: true },
-        'Schwerter': { destination: 10, hasParry: true },
-        'Stangenwaffen': { destination: 11, hasParry: true },
-        'Wurfwaffen': { destination: 12, hasParry: false },
-        'Zweihandhiebwaffen': { destination: 13, hasParry: true },
-        'Zweihandschwerter': { destination: 14, hasParry: true }
-      };
-
-      Object.entries(combatSkillsConfig).forEach(([skillName, config]) => {
+      // Combat skills
+      Object.entries(Config.COMBAT_SKILLS).forEach(([skillName, config]) => {
         this.combatSkills[skillName] = this.combat(skillName, config.destination, config.hasParry);
       });
 
-      const combat_specialability = this.map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'Combat');
-      var f_combat_specialability = Array.from(combat_specialability.values(), (value) => value.name + ' ' + romanize(value.system.step.value)).join(', ');
+      const combatSA = this.filterItems('specialability', item => item.system.category.value === 'Combat');
+      const combatSANames = combatSA.map(item => `${item.name} ${RomanNumerals.romanize(item.system.step.value)}`).join(', ');
+      this.setTextField('Held_SF_Kampf', combatSANames);
 
-      this.setTextField('Held_SF_Kampf', f_combat_specialability);
+      // Coins
+      ['Dukaten', 'Silber', 'Heller', 'Kreuzer'].forEach((coin, index) => {
+        const shortCode = ['D', 'S', 'H', 'K'][index];
+        this.processCoins(coin, shortCode);
+      });
 
-      /** Coins*/
-
-      this.coins('Dukaten', 'D');
-      this.coins('Silber', 'S');
-      this.coins('Heller', 'H');
-      this.coins('Kreuzer', 'K');
-
-      /** Weapons */
-      /** melee weapon */
-
+      // Equipment
       this.setMeleeFields();
-
-      /** range weapon   */
-
       this.setRangeFields();
-
-      /** armor */
-
       this.setArmorFields();
-
-      /** shields and parry weapon */
-
       this.setShieldFields();
 
-      /** Items */
+      // Inventory
+      const items = this.filterItems('equipment')
+        .concat(this.filterItems('meleeweapon'))
+        .concat(this.filterItems('armor'))
+        .concat(this.filterItems('rangeweapon'))
+        .concat(this.filterItems('ammunition'));
 
-      const items = this.map.filter(
-        (value) => value.type === 'equipment' || value.type === 'meleeweapon' || value.type === 'armor' || value.type === 'rangeweapon' || value.type === 'ammunition'
-      );
-      var arrayLength = items.length;
-      var sum_weight1 = 0;
-      var sum_weight2 = 0;
-      if (arrayLength > 72) {
-        arrayLength = 72;
-        ui.notifications.warn('You have more than 72 items in your inventory! The template can only hold a maximum of 72');
+      let sumWeight1 = 0;
+      let sumWeight2 = 0;
+      const arrayLength = Math.min(items.length, Config.MAX_ITEMS.INVENTORY);
+
+      if (items.length > Config.MAX_ITEMS.INVENTORY) {
+        ui.notifications.warn(`You have more than ${Config.MAX_ITEMS.INVENTORY} items in your inventory! The template can only hold a maximum of ${Config.MAX_ITEMS.INVENTORY}`);
       }
-      for (var i = 0; i < arrayLength; i++) {
-        if (Number(items[i].system.quantity.value) > 1) {
-          var quantity = items[i].system.quantity.value + 'x ';
-        } else {
-          var quantity = '';
-        }
-        this.setTextField('Besitz_Name_' + (i + 1), quantity + items[i].name);
-        this.setTextField('Besitz_Gewicht_' + (i + 1), items[i].system.weight.value);
+
+      for (let i = 0; i < arrayLength; i++) {
+        const quantity = Number(items[i].system.quantity.value) > 1 ? `${items[i].system.quantity.value}x ` : '';
+        this.setTextField(`Besitz_Name_${i + 1}`, quantity + items[i].name);
+        this.setTextField(`Besitz_Gewicht_${i + 1}`, items[i].system.weight.value);
+        
         if (i <= 36) {
-          sum_weight1 = sum_weight1 + Number(items[i].system.weight.value);
+          sumWeight1 += Number(items[i].system.weight.value);
         } else {
-          sum_weight2 = sum_weight2 + Number(items[i].system.weight.value);
+          sumWeight2 += Number(items[i].system.weight.value);
         }
       }
-      this.setTextField('Gewicht_1', Math.round(sum_weight1 * 100) / 100);
-      this.setTextField('Gewicht_2', Math.round((sum_weight1 + sum_weight2) * 100) / 100);
-      this.setTextField('Trag_1', Number(this.entity.system.characteristics.kk.value) * 2);
 
-      /** Mage */
-      /** spells */
+      this.setTextField('Gewicht_1', Math.round(sumWeight1 * 100) / 100);
+      this.setTextField('Gewicht_2', Math.round((sumWeight1 + sumWeight2) * 100) / 100);
+      this.setTextField('Trag_1', Number(characteristics.kk.value) * 2);
 
+      // Magic section
       this.setSpellFields();
 
-      const baseAE = this.entity.system.status.astralenergy.max;
-      const actualAE = this.entity.system.status.astralenergy.value
-      this.setTextField('AE_Max_2', baseAE);
-      if (baseAE !== actualAE) {
-        this.setTextField('AE_Aktuell', actualAE);
+      const astralEnergy = this.entity.system.status.astralenergy;
+      this.setTextField('AE_Max_2', astralEnergy.max);
+      if (astralEnergy.max !== astralEnergy.value) {
+        this.setTextField('AE_Aktuell', astralEnergy.value);
       }
       this.setTextField('Held_Tradition_magisch', this.entity.system.tradition.magical);
-      this.setTextField('Leit_Magie_Ansicht', Leitwert_long(this.entity.system.guidevalue.magical));
-      this.setTextField('Held_Merkmale', Leitwert_long(this.entity.system.feature.magical));
+      this.setTextField('Leit_Magie_Ansicht', CharacterUtils.getLeitwertLong(this.entity.system.guidevalue.magical));
+      this.setTextField('Held_Merkmale', CharacterUtils.getLeitwertLong(this.entity.system.feature.magical));
 
-      /** magictrick */
-      const combat_magictrick = this.map.filter((value) => value.type === 'magictrick');
-      var f_combat_magictrick = Array.from(combat_magictrick.values(), (value) => value.name).join(', ');
+      // Magic tricks
+      const magicTricks = this.filterItems('magictrick');
+      this.setTextField('Held_Tricks', magicTricks.map(item => item.name).join(', '));
 
-      this.setTextField('Held_Tricks', f_combat_magictrick);
+      // Magic special abilities
+      const magicSA = this.filterItems('specialability', item => item.system.category.value === 'magical');
+      this.setTextField('Held_SF_Mag', magicSA.map(item => item.name).join(', '));
 
-      /** special_magic */
-      const special_magic = this.map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'magical');
-      var f_special_magic = Array.from(special_magic.values(), (value) => value.name).join(', ');
-
-      this.setTextField('Held_SF_Mag', f_special_magic);
-
-      /** Cleric */
-      /** liturgy */
-
+      // Clerical section
       this.setLiturgyFields();
 
-      const baseKE = this.entity.system.status.karmaenergy.max;
-      const actualKE = this.entity.system.status.karmaenergy.value;      
-      this.setTextField('KE_Max_2', baseKE);
-      if (baseKE !== actualKE) {
-        this.setTextField('KE_Aktuell', actualKE);
+      const karmaEnergy = this.entity.system.status.karmaenergy;
+      this.setTextField('KE_Max_2', karmaEnergy.max);
+      if (karmaEnergy.max !== karmaEnergy.value) {
+        this.setTextField('KE_Aktuell', karmaEnergy.value);
       }
       this.setTextField('Held_Tradition_klerikal', this.entity.system.tradition.clerical);
-      this.setTextField('Leit_Karma_Anzeige', Leitwert_long(this.entity.system.guidevalue.clerical));
-      this.setTextField('Held_Aspekt', Leitwert_long(this.entity.system.feature.clerical));
+      this.setTextField('Leit_Karma_Anzeige', CharacterUtils.getLeitwertLong(this.entity.system.guidevalue.clerical));
+      this.setTextField('Held_Aspekt', CharacterUtils.getLeitwertLong(this.entity.system.feature.clerical));
 
-      /** blessing */
-      const combat_blessing = this.map.filter((value) => value.type === 'blessing');
-      var f_combat_blessing = Array.from(combat_blessing.values(), (value) => value.name).join(', ');
+      // Blessings
+      const blessings = this.filterItems('blessing');
+      this.setTextField('Held_Segen', blessings.map(item => item.name).join(', '));
 
-      this.setTextField('Held_Segen', f_combat_blessing);
+      // Clerical special abilities
+      const clericalSA = this.filterItems('specialability', item => item.system.category.value === 'clerical');
+      this.setTextField('Held_SF_Karm', clericalSA.map(item => item.name).join(', '));
 
-      /** special_cleric */
-      const special_cleric = this.map.filter((value) => value.type === 'specialability').filter((value) => value.system.category.value === 'clerical');
-      var f_special_cleric = Array.from(special_cleric.values(), (value) => value.name).join(', ');
-
-      this.setTextField('Held_SF_Karm', f_special_cleric);
-
-      /** set PDF Metadata for PDF*/
-      pdfDoc.setTitle('DSA5-' + this.entity.name + '.pdf created on ' + today);
+      // Set PDF metadata
+      pdfDoc.setTitle(`DSA5-${this.entity.name}.pdf created on ${today}`);
       pdfDoc.setSubject('https://github.com/Plushtoast/dsa5-char2pdfv2');
-      pdfDoc.setProducer('DSA5 - char2PDF ' + modul_version);
+      pdfDoc.setProducer(`DSA5 - char2PDF ${modul_version}`);
       pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
       pdfDoc.setCreationDate(new Date());
       pdfDoc.setModificationDate(new Date());
 
-      /** save filled template */
-
+      // Save and download
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf;charset=utf-8' });
-      saveAs(blob, 'DSA5-' + this.entity.name + '.pdf');
+      saveAs(blob, `DSA5-${this.entity.name}.pdf`);
+      
     } catch (err) {
       ui.notifications.error(`Char2PDF - Error: ${err.message}`);
       console.error(err);
     }
   }
 }
-
-
