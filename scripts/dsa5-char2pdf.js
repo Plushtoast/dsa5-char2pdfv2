@@ -38,44 +38,31 @@ class dsa5char2pdf {
  */
 
 function romanize(num) {
-  if (!+num) return false;
-  var digits = String(+num).split(''),
-    key = [
-      '',
-      'C',
-      'CC',
-      'CCC',
-      'CD',
-      'D',
-      'DC',
-      'DCC',
-      'DCCC',
-      'CM',
-      '',
-      'X',
-      'XX',
-      'XXX',
-      'XL',
-      'L',
-      'LX',
-      'LXX',
-      'LXXX',
-      'XC',
-      '',
-      'I',
-      'II',
-      'III',
-      'IV',
-      'V',
-      'VI',
-      'VII',
-      'VIII',
-      'IX',
-    ],
-    roman = '',
-    i = 3;
-  while (i--) roman = (key[+digits.pop() + i * 10] || '') + roman;
-  return Array(+digits.join('') + 1).join('M') + roman;
+  num = Number(num);
+  if (!Number.isInteger(num) || num <= 0) return false;
+  const romanNumerals = [
+    ['M', 1000],
+    ['CM', 900],
+    ['D', 500],
+    ['CD', 400],
+    ['C', 100],
+    ['XC', 90],
+    ['L', 50],
+    ['XL', 40],
+    ['X', 10],
+    ['IX', 9],
+    ['V', 5],
+    ['IV', 4],
+    ['I', 1],
+  ];
+  let result = '';
+  for (const [roman, value] of romanNumerals) {
+    while (num >= value) {
+      result += roman;
+      num -= value;
+    }
+  }
+  return result;
 }
 
 function deromanize(str) {
@@ -157,33 +144,22 @@ class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMi
 
 /** Function to convert webp to png for PDF-Import */
 
-function toDataUrl(src, outputFormat) {
-  // create an image-object to convert webp to png for PDF-Import
+async function toDataUrl(src, outputFormat = 'image/png') {
   return new Promise((resolve, reject) => {
-    var img = new Image();
-    // to solve Forge VTT problem - add CORS to prenvent tainted canvases
+    const img = new Image();
     img.crossOrigin = 'Anonymous';
-    img.onload = function () {
-      var canvas = document.createElement('CANVAS');
-      var ctx = canvas.getContext('2d');
-      var dataURL;
-      canvas.height = this.naturalHeight;
-      canvas.width = this.naturalWidth;
-      ctx.drawImage(this, 0, 0);
-      // Convert the canvas to a data url
-      dataURL = canvas.toDataURL(outputFormat);
-      resolve(dataURL);
-      // Mark the canvas to be ready for garbage
-      // collection
-      canvas = null;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL(outputFormat));
     };
-    // Load the image
+    img.onerror = reject;
     img.src = src;
-    // make sure the load event fires for cached images too
-    if (img.complete || img.complete === undefined) {
-      // Flush cache
+    if (img.complete) {
       img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-      // Try again
       img.src = src;
     }
   });
@@ -204,35 +180,17 @@ async function get_actor_pic(src) {
  * Converts the Leitwert short into the long version
  */
 function Leitwert_long(Leitwert_short) {
-  switch (Leitwert_short.toUpperCase()) {
-    case 'MU':
-      Leitwert_short = 'Mut';
-      break;
-    case 'KL':
-      Leitwert_short = 'Klugheit';
-      break;
-    case 'IN':
-      Leitwert_short = 'Intuition';
-      break;
-    case 'CH':
-      Leitwert_short = 'Charisma';
-      break;
-    case 'FF':
-      Leitwert_short = 'Fingerfertigkeit';
-      break;
-    case 'GE':
-      Leitwert_short = 'Gewandheit';
-      break;
-    case 'KO':
-      Leitwert_short = 'Konstitution';
-      break;
-    case 'KK':
-      Leitwert_short = 'Körperkraft';
-      break;
-    default:
-      break;
-  }
-  return Leitwert_short;
+  const mapping = {
+    MU: 'Mut',
+    KL: 'Klugheit',
+    IN: 'Intuition',
+    CH: 'Charisma',
+    FF: 'Fingerfertigkeit',
+    GE: 'Gewandheit',
+    KO: 'Konstitution',
+    KK: 'Körperkraft',
+  };
+  return mapping[Leitwert_short.toUpperCase()] || Leitwert_short;
 }
 
 /**
