@@ -20,15 +20,15 @@
         "id": "dsa5",
         "type": "system",
         "compatibility": {
-          "minimum": "7.0.0"
+          "minimum": "8.0.0"
         }
       }
     ]
   },
   "compatibility": {
-    "minimum": "13",
-    "verified": "13",
-    "maximum": "13"
+    "minimum": "14",
+    "verified": "14",
+    "maximum": "14"
   },
   "esmodules": [
     "./scripts/dsa5-char2pdf.js"

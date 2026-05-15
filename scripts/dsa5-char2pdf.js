@@ -206,13 +206,13 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 
 Hooks.on('getActorContextOptions', (html, entryOptions) => {
   entryOptions.push({
-    name: 'DSA5-Char2PDF',
+    label: 'DSA5-Char2PDF',
     icon: '<i class="fas fa-tasks"></i>',
-    condition: (li) => {
+    visible: (li) => {
       const entity = game.actors.get(li.dataset.entryId);
       return (entity.type === 'character' || entity.sheet === 'ActorSheetdsa5Character') ? entity.id : false;
     },
-    callback: (li) => {
+    onClick: (_, li) => {
       const actor = game.actors.get(li.dataset.entryId);
       const exportPreferences = new ExportPreferences(actor);
       exportPreferences.render(true);
