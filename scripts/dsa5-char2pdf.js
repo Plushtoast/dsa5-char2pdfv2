@@ -209,11 +209,19 @@ Hooks.on('getActorContextOptions', (html, entryOptions) => {
     label: 'DSA5-Char2PDF',
     icon: '<i class="fas fa-tasks"></i>',
     visible: (li) => {
-      const entity = game.actors.get(li.dataset.entryId);
+      const id = li.dataset.entryId;
+      const entity = game.actors.get(id);
+
+      if (!entity) return false;
+
       return (entity.type === 'character' || entity.sheet === 'ActorSheetdsa5Character') ? entity.id : false;
     },
     onClick: (_, li) => {
-      const actor = game.actors.get(li.dataset.entryId);
+      const id = li.dataset.entryId;
+      const actor = game.actors.get(id);
+
+      if (!actor) return;
+
       const exportPreferences = new ExportPreferences(actor);
       exportPreferences.render(true);
     },
