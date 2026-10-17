@@ -1,0 +1,24 @@
+{{#if snapshot.notes.biography}}
+<section class="notes-section sheet-block" data-split-prose>
+  <h2>{{labels.biography}}</h2>
+  <div class="notes-prose pdf-field" data-pdf-field="notes.biography" data-pdf-multiline="true">{{{snapshot.notes.biography}}}</div>
+</section>
+{{/if}}
+{{#if snapshot.notes.player}}
+<section class="notes-section sheet-block" data-split-prose>
+  <h2>{{labels.notes}}</h2>
+  <div class="notes-prose pdf-field" data-pdf-field="notes.player" data-pdf-multiline="true">{{{snapshot.notes.player}}}</div>
+</section>
+{{/if}}
+{{#if snapshot.notes.owner}}
+<section class="notes-section sheet-block" data-split-prose>
+  <h2>{{labels.ownerNotes}}</h2>
+  <div class="notes-prose pdf-field" data-pdf-field="notes.owner" data-pdf-multiline="true">{{{snapshot.notes.owner}}}</div>
+</section>
+{{/if}}
+{{#if snapshot.notes.gm}}
+<section class="notes-section sheet-block" data-split-prose>
+  <h2>{{labels.gmNotes}}</h2>
+  <div class="notes-prose pdf-field" data-pdf-field="notes.gm" data-pdf-multiline="true">{{{snapshot.notes.gm}}}</div>
+</section>
+{{/if}}

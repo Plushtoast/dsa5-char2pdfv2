@@ -1,5 +1,12 @@
 {
+  "scripts": {
+    "test": "node test/locale-map.test.js && node test/pdf-labels.test.js && node test/templates.test.js && node test/actor-snapshot.test.mjs && node test/sheet-pages.test.mjs && node test/htmlsheet-render.test.mjs && node test/pdf-fields.test.mjs",
+    "build:templates": "node modifytemplate.js"
+  },
   "dependencies": {
     "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "handlebars": "^4.7.10"
   }
 }

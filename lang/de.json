@@ -1,0 +1,31 @@
+{
+  "dsa5-char2pdfv2": {
+    "export": "Exportieren",
+    "exporting": "Exportiere...",
+    "exportType": "Exportart",
+    "exportHtmlsheet": "HTML-Heldenbogen",
+    "exportUlisses": "Ulisses-Vorlage (alt)",
+    "theme": "Darstellung",
+    "themeTable": "Tisch (Pergament)",
+    "themePrint": "Druckerfreundlich",
+    "characterSheet": "Heldenbogen",
+    "continued": "(Fortsetzung)",
+    "distinguishing": "Unterscheidungsmerkmale",
+    "location": "Ort",
+    "ap": "AP",
+    "apSpent": "AP ausgegeben",
+    "apCurrent": "AP aktuell",
+    "encAbbrev": "BE",
+    "conditions": "Zustände",
+    "ownerNotes": "Notizen des Besitzers",
+    "includeBiography": "Biografie einschließen",
+    "fateAbilities": "Schicksalspunkt SF: {names}",
+    "reloadRounds": "{value} Runden",
+    "warnTooMany": "Du hast mehr als {max} {kind}! Die Vorlage fasst höchstens {max}.",
+    "kindShields": "Schilde",
+    "kindArmor": "Rüstungen",
+    "kindRangeWeapons": "Fernwaffen",
+    "kindMeleeWeapons": "Nahkampfwaffen",
+    "kindInventory": "Inventargegenstände"
+  }
+}

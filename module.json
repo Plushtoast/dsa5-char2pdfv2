@@ -33,10 +33,26 @@
   "esmodules": [
     "./scripts/dsa5-char2pdf.js"
   ],
+  "languages": [
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "styles": [
+    "./styles/htmlsheet.css",
+    "./styles/htmlsheet-print.css"
+  ],
   "scripts": [
     "./lib/FileSaver.js",
     "./lib/pdf-lib.js"
-  ], 
+  ],
   "url": "https://github.com/Plushtoast/dsa5-char2pdfv2",
   "manifest": "https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdfv2/foundry14/module.json",
   "bugs": "https://github.com/Plushtoast/dsa5-char2pdfv2/issues/new/choose"

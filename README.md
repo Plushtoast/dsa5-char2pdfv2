@@ -10,7 +10,14 @@
 # DSA5-Foundry-VTT-Char2PDF
 *Foundry VTT module to transfer the DSA 5 actors to PDF*
 
-This module is to extend the functionality of the [Foundry VTT](https://foundryvtt.com/) platform and gives the users of [The Dark Eye / Das schwarze Auge 5](https://foundryvtt.com/packages/dsa5) the possibility to export their characters into the official Ulisses PDF template.  
+This module is to extend the functionality of the [Foundry VTT](https://foundryvtt.com/) platform and gives the users of [The Dark Eye / Das schwarze Auge 5](https://foundryvtt.com/packages/dsa5) the possibility to export their characters as PDF.
+
+Two export modes:
+
+1. **HTML character sheet** (default) — printable multi-page A4 sheet in the world’s language (`de` / otherwise `en`). Lists are not capped; extra rows become extra pages. Choose parchment (table) or printer-friendly appearance.
+2. **Ulisses template (legacy)** — fills the official Ulisses Heldendokument. Long inventories and spell lists still hit the form’s field limit.
+
+Language follows `game.i18n.lang`. There is no language dropdown.  
 
 ## Installation
 ### Automatic Installtion
@@ -37,9 +44,14 @@ As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` f
 Please be aware. This context menu entry will only appear for actors which have been created with the template `DSA5.ActorSheetdsa5Character` and as `character` type. 
 Other templates and types are not recognized. 
 
-## Used librarys: 
-- *FileSaver.js* (using [FileSaver.js](https://github.com/eligrey/FileSaver.js)) by [eligrey](https://github.com/eligrey)
-- *pdf-lib.js* (using [pdf-lib.js](https://github.com/Hopding/pdf-lib)) by [Hopding](https://github.com/Hopding)
+## Used libraries
+- *FileSaver.js* ([FileSaver.js](https://github.com/eligrey/FileSaver.js)) by [eligrey](https://github.com/eligrey)
+- *pdf-lib.js* ([pdf-lib](https://github.com/Hopding/pdf-lib)) by [Hopding](https://github.com/Hopding) — Ulisses fill
+- *html2pdf.js* ([html2pdf.js](https://github.com/eKoopmans/html2pdf.js)) by [eKoopmans](https://github.com/eKoopmans) — HTML sheet (html2canvas + jsPDF)
+
+## Image credits
+
+Parchment, frames, logos and combat ornaments in `assets/images/` come from the Roll20 DSA character generator asset set (WebP). They are used as sheet chrome for the HTML export.
 
 ## License
 

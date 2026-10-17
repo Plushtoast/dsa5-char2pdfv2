@@ -1,0 +1,25 @@
+<div class="talent-group sheet-block">
+  <h2>{{group.label}}</h2>
+  <table class="sheet-table" data-split>
+    <thead>
+      <tr>
+        <th class="col-name">{{labels.name}}</th>
+        <th class="col-check">{{labels.check}}</th>
+        <th class="col-sr">{{labels.sr}}</th>
+        <th class="col-enc">{{labels.encumbrance}}</th>
+        <th class="col-notes">{{labels.notes}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each group.rows}}
+      <tr>
+        <td class="pdf-field" data-pdf-field="skill.{{../group.id}}.{{@index}}.name">{{name}}</td>
+        <td class="col-check pdf-field" data-pdf-field="skill.{{../group.id}}.{{@index}}.check">{{check}}</td>
+        <td class="col-sr pdf-field" data-pdf-field="skill.{{../group.id}}.{{@index}}.sr" data-pdf-align="center">{{sr}}</td>
+        <td class="col-enc pdf-field" data-pdf-field="skill.{{../group.id}}.{{@index}}.enc" data-pdf-align="center">{{enc}}</td>
+        <td class="col-notes pdf-field" data-pdf-field="skill.{{../group.id}}.{{@index}}.notes"></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

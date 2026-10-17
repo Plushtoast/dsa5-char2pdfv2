@@ -1,0 +1,31 @@
+{
+  "dsa5-char2pdfv2": {
+    "export": "Export",
+    "exporting": "Exporting...",
+    "exportType": "Export type",
+    "exportHtmlsheet": "HTML character sheet",
+    "exportUlisses": "Ulisses template (legacy)",
+    "theme": "Appearance",
+    "themeTable": "Table (parchment)",
+    "themePrint": "Printer-friendly",
+    "characterSheet": "Character sheet",
+    "continued": "(continued)",
+    "distinguishing": "Distinguishing marks",
+    "location": "Location",
+    "ap": "AP",
+    "apSpent": "AP spent",
+    "apCurrent": "AP current",
+    "encAbbrev": "BE",
+    "conditions": "Conditions",
+    "ownerNotes": "Owner notes",
+    "includeBiography": "Include biography",
+    "fateAbilities": "Fate Point Special Abilities: {names}",
+    "reloadRounds": "{value} rounds",
+    "warnTooMany": "You have more than {max} {kind}! The template can only hold a maximum of {max}.",
+    "kindShields": "shields",
+    "kindArmor": "armors",
+    "kindRangeWeapons": "ranged weapons",
+    "kindMeleeWeapons": "melee weapons",
+    "kindInventory": "inventory items"
+  }
+}

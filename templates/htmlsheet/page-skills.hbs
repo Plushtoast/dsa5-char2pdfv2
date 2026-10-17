@@ -1,0 +1,22 @@
+<div class="skills-columns">
+  <div class="skills-col">
+    {{#each leftGroups}}
+    {{> htmlsheet-talent-table group=this labels=../labels}}
+    {{/each}}
+  </div>
+  <div class="skills-col">
+    {{#each rightGroups}}
+    {{> htmlsheet-talent-table group=this labels=../labels}}
+    {{/each}}
+  </div>
+</div>
+<div class="lang-footer">
+  <div class="trait-line sheet-block" data-split-prose>
+    <span class="trait-label">{{labels.language}}</span>
+    <div class="pdf-field trait-text" data-pdf-field="skills.languages" data-pdf-multiline="true">{{lists.languages}}</div>
+  </div>
+  <div class="trait-line sheet-block" data-split-prose>
+    <span class="trait-label">{{labels.literacy}}</span>
+    <div class="pdf-field trait-text" data-pdf-field="skills.scripts" data-pdf-multiline="true">{{lists.scripts}}</div>
+  </div>
+</div>

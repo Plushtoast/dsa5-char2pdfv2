@@ -1,0 +1,60 @@
+#dsa5-htmlsheet[data-theme="print"] {
+  color: #111;
+  background: #fff;
+  --sheet-text: #111;
+  --sheet-muted: #333;
+  --sheet-rule: #222;
+  --sheet-fill: #fff;
+  --sheet-head: #eee;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .sheet-page {
+  background: #fff;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .sheet-page-bg-img,
+#dsa5-htmlsheet[data-theme="print"] .sheet-zierleiste,
+#dsa5-htmlsheet[data-theme="print"] .attr-lily {
+  display: none;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .sheet-page-inner {
+  padding: 28px 32px 24px;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .attr-bar {
+  height: 78px;
+  border: 1px solid #111;
+  padding: 0 8px;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .attr-cell {
+  --attr-color: #111;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .attr-abbrev,
+#dsa5-htmlsheet[data-theme="print"] .attr-value {
+  border-color: #111;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .derived-cell.is-lp,
+#dsa5-htmlsheet[data-theme="print"] .derived-cell.is-ae,
+#dsa5-htmlsheet[data-theme="print"] .derived-cell.is-kp {
+  background: #fff;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .cond-level {
+  border-color: #111;
+}
+
+@media print {
+  #dsa5-htmlsheet-host {
+    position: static;
+    z-index: auto;
+    pointer-events: auto;
+  }
+
+  #dsa5-htmlsheet .sheet-page {
+    page-break-after: always;
+  }
+}

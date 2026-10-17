@@ -1,0 +1,20 @@
+<div class="trait-block">
+  <div class="trait-line sheet-block" data-split-prose>
+    <span class="trait-label">{{labels.advantages}}</span>
+    <div class="pdf-field trait-text" data-pdf-field="traits.advantages" data-pdf-multiline="true">{{lists.advantages}}</div>
+  </div>
+  <div class="trait-line sheet-block" data-split-prose>
+    <span class="trait-label">{{labels.disadvantages}}</span>
+    <div class="pdf-field trait-text" data-pdf-field="traits.disadvantages" data-pdf-multiline="true">{{lists.disadvantages}}</div>
+  </div>
+  <div class="trait-line sheet-block" data-split-prose>
+    <span class="trait-label">{{labels.specialAbilities}}</span>
+    <div class="pdf-field trait-text" data-pdf-field="traits.generalAbilities" data-pdf-multiline="true">{{lists.generalAbilities}}</div>
+  </div>
+  {{#if snapshot.traits.fateAbilities.length}}
+  <div class="trait-line sheet-block" data-split-prose>
+    <span class="trait-label">{{labels.fateAbilities}}</span>
+    <div class="pdf-field trait-text" data-pdf-field="traits.fateAbilities" data-pdf-multiline="true">{{lists.fateAbilities}}</div>
+  </div>
+  {{/if}}
+</div>

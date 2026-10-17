@@ -1,0 +1,16 @@
+<section class="sheet-page" data-page="{{pageId}}">
+  <img class="sheet-page-bg-img" src="{{images.hintergrund}}" alt="" aria-hidden="true">
+  <div class="sheet-page-inner">
+    <header class="sheet-page-header">
+      <img class="sheet-logo" src="{{images.logo}}" alt="">
+      <div class="sheet-page-heading">
+        <h1 class="sheet-hero-name pdf-field" data-pdf-field="hero.name">{{snapshot.name}}</h1>
+        <p class="sheet-kicker">{{title}}{{#if continuation}} <span class="sheet-cont">{{labels.continued}}</span>{{/if}}</p>
+      </div>
+    </header>
+    <img class="sheet-zierleiste" src="{{images.zierleiste}}" alt="" aria-hidden="true">
+    <div class="sheet-page-body">
+      {{{body}}}
+    </div>
+  </div>
+</section>

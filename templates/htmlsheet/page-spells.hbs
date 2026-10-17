@@ -1,0 +1,13 @@
+{{#unless continuation}}
+<div class="magic-meta sheet-block">
+  <div><span>{{labels.tradition}}</span><b class="pdf-field" data-pdf-field="magic.tradition">{{snapshot.magical.tradition}}</b></div>
+  <div><span>{{labels.feature}}</span><b class="pdf-field" data-pdf-field="magic.feature">{{snapshot.magical.feature}}</b></div>
+  <div><span>{{labels.guidevalue}}</span><b class="pdf-field" data-pdf-field="magic.guidevalue">{{snapshot.magical.guidevalue}}</b></div>
+  <div><span>{{snapshot.derived.ae.abbrev}}</span><b class="pdf-field" data-pdf-field="magic.ae">{{snapshot.derived.ae.value}} / {{snapshot.derived.ae.max}}</b></div>
+</div>
+{{/unless}}
+{{> htmlsheet-spell-table rows=rows labels=labels}}
+{{#if isLast}}
+<p class="trait-line sheet-block"><span class="trait-label">{{labels.cantrips}}</span> <span class="pdf-field" data-pdf-field="magic.cantrips" data-pdf-multiline="true">{{lists.cantrips}}</span></p>
+<p class="trait-line sheet-block"><span class="trait-label">{{labels.specialAbilities}}</span> <span class="pdf-field" data-pdf-field="magic.abilities" data-pdf-multiline="true">{{lists.magicalAbilities}}</span></p>
+{{/if}}

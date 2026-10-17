@@ -1,0 +1,116 @@
+{{#if snapshot.melee.length}}
+<div class="sheet-block">
+  <h2>{{labels.melee}}</h2>
+  <table class="sheet-table" data-split>
+    <thead>
+      <tr>
+        <th>{{labels.name}}</th>
+        <th>{{labels.combat}}</th>
+        <th>{{labels.damage}}</th>
+        <th>{{labels.at}}</th>
+        <th>{{labels.pa}}</th>
+        <th>{{labels.reach}}</th>
+        <th>{{labels.weight}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each snapshot.melee}}
+      <tr>
+        <td class="pdf-field" data-pdf-field="melee.{{@index}}.name">{{name}}</td>
+        <td class="pdf-field" data-pdf-field="melee.{{@index}}.combatskill">{{combatskill}}</td>
+        <td class="pdf-field" data-pdf-field="melee.{{@index}}.damage">{{damage}}</td>
+        <td class="pdf-field" data-pdf-field="melee.{{@index}}.at" data-pdf-align="center">{{at}}</td>
+        <td class="pdf-field" data-pdf-field="melee.{{@index}}.pa" data-pdf-align="center">{{pa}}</td>
+        <td class="pdf-field" data-pdf-field="melee.{{@index}}.reach">{{reach}}</td>
+        <td class="pdf-field" data-pdf-field="melee.{{@index}}.weight" data-pdf-align="center">{{weight}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{/if}}
+{{#if snapshot.ranged.length}}
+<div class="sheet-block">
+  <h2>{{labels.ranged}}</h2>
+  <table class="sheet-table" data-split>
+    <thead>
+      <tr>
+        <th>{{labels.name}}</th>
+        <th>{{labels.combat}}</th>
+        <th>{{labels.damage}}</th>
+        <th>{{labels.rc}}</th>
+        <th>{{labels.reload}}</th>
+        <th>{{labels.ammunition}}</th>
+        <th>{{labels.weight}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each snapshot.ranged}}
+      <tr>
+        <td class="pdf-field" data-pdf-field="ranged.{{@index}}.name">{{name}}</td>
+        <td class="pdf-field" data-pdf-field="ranged.{{@index}}.combatskill">{{combatskill}}</td>
+        <td class="pdf-field" data-pdf-field="ranged.{{@index}}.damage">{{damage}}</td>
+        <td class="pdf-field" data-pdf-field="ranged.{{@index}}.rc" data-pdf-align="center">{{rc}}</td>
+        <td class="pdf-field" data-pdf-field="ranged.{{@index}}.reload">{{reloadTime}}</td>
+        <td class="pdf-field" data-pdf-field="ranged.{{@index}}.ammunition">{{ammunition}}</td>
+        <td class="pdf-field" data-pdf-field="ranged.{{@index}}.weight" data-pdf-align="center">{{weight}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{/if}}
+{{#if snapshot.armor.length}}
+<div class="sheet-block">
+  <h2>{{labels.armor}}</h2>
+  <table class="sheet-table" data-split>
+    <thead>
+      <tr>
+        <th>{{labels.name}}</th>
+        <th>{{labels.protection}}</th>
+        <th>{{labels.encumbrance}}</th>
+        <th>{{labels.effect}}</th>
+        <th>{{labels.weight}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each snapshot.armor}}
+      <tr>
+        <td class="pdf-field" data-pdf-field="armor.{{@index}}.name">{{name}}</td>
+        <td class="pdf-field" data-pdf-field="armor.{{@index}}.protection" data-pdf-align="center">{{protection}}</td>
+        <td class="pdf-field" data-pdf-field="armor.{{@index}}.encumbrance" data-pdf-align="center">{{encumbrance}}</td>
+        <td class="pdf-field" data-pdf-field="armor.{{@index}}.effect">{{effect}}</td>
+        <td class="pdf-field" data-pdf-field="armor.{{@index}}.weight" data-pdf-align="center">{{weight}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{/if}}
+{{#if snapshot.shields.length}}
+<div class="sheet-block">
+  <h2>{{labels.shields}}</h2>
+  <table class="sheet-table" data-split>
+    <thead>
+      <tr>
+        <th>{{labels.name}}</th>
+        <th>{{labels.structure}}</th>
+        <th>{{labels.at}}</th>
+        <th>{{labels.pa}}</th>
+        <th>{{labels.weight}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each snapshot.shields}}
+      <tr>
+        <td class="pdf-field" data-pdf-field="shield.{{@index}}.name">{{name}}</td>
+        <td class="pdf-field" data-pdf-field="shield.{{@index}}.structure">{{structure}}</td>
+        <td class="pdf-field" data-pdf-field="shield.{{@index}}.at" data-pdf-align="center">{{atmod}}</td>
+        <td class="pdf-field" data-pdf-field="shield.{{@index}}.pa" data-pdf-align="center">{{pamod}}</td>
+        <td class="pdf-field" data-pdf-field="shield.{{@index}}.weight" data-pdf-align="center">{{weight}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{/if}}

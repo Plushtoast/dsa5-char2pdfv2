@@ -1,0 +1,50 @@
+<div class="sheet-block">
+  <table class="sheet-table" data-split>
+    <thead>
+      <tr>
+        <th>{{labels.name}}</th>
+        <th>{{labels.attr}}</th>
+        <th class="col-sr">{{labels.sr}}</th>
+        <th>{{labels.at}}</th>
+        <th>{{labels.pa}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each snapshot.combatTechniques}}
+      <tr>
+        <td class="pdf-field" data-pdf-field="combat.{{@index}}.name">{{name}}</td>
+        <td class="pdf-field" data-pdf-field="combat.{{@index}}.attr">{{attr}}</td>
+        <td class="col-sr pdf-field" data-pdf-field="combat.{{@index}}.sr" data-pdf-align="center">{{sr}}</td>
+        <td class="pdf-field" data-pdf-field="combat.{{@index}}.at" data-pdf-align="center">{{at}}</td>
+        <td class="pdf-field" data-pdf-field="combat.{{@index}}.pa" data-pdf-align="center">{{pa}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{> htmlsheet-combat-tables}}
+{{#if snapshot.combatAbilities.length}}
+<div class="trait-line sheet-block" data-split-prose>
+  <span class="trait-label">{{labels.specialAbilities}}</span>
+  <div class="pdf-field trait-text" data-pdf-field="combat.abilities" data-pdf-multiline="true">{{lists.combatAbilities}}</div>
+</div>
+{{/if}}
+<div class="combat-derived sheet-block">
+  <span>{{snapshot.derived.mov.abbrev}} <span class="pdf-field" data-pdf-field="combat.mov">{{snapshot.derived.mov.value}}</span></span>
+  <span>{{snapshot.derived.lp.abbrev}} <span class="pdf-field" data-pdf-field="combat.lp">{{snapshot.derived.lp.max}}</span></span>
+  <span>{{snapshot.derived.dodge.abbrev}} <span class="pdf-field" data-pdf-field="combat.dodge">{{snapshot.derived.dodge.max}}</span></span>
+  <span>{{snapshot.derived.ini.abbrev}} <span class="pdf-field" data-pdf-field="combat.ini">{{snapshot.derived.ini.value}}</span></span>
+  <span>{{snapshot.derived.spi.abbrev}} <span class="pdf-field" data-pdf-field="combat.spi">{{snapshot.derived.spi.max}}</span></span>
+  <span>{{snapshot.derived.tou.abbrev}} <span class="pdf-field" data-pdf-field="combat.tou">{{snapshot.derived.tou.max}}</span></span>
+</div>
+<div class="cond-block sheet-block">
+  <h2>{{labels.conditions}}</h2>
+  <div class="cond-grid">
+    {{#each snapshot.conditions}}
+    <div class="cond-row">
+      <span class="cond-name">{{name}}</span>
+      <span class="cond-level pdf-field" data-pdf-field="cond.{{id}}" data-pdf-dropdown="{{dropdown}}" data-pdf-align="center">{{label}}</span>
+    </div>
+    {{/each}}
+  </div>
+</div>

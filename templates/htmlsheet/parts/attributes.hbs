@@ -1,0 +1,12 @@
+<div class="attr-bar sheet-block">
+  <img class="attr-lily attr-lily-left" src="{{images.lilie}}" alt="" aria-hidden="true">
+  <div class="attr-cells">
+    {{#each snapshot.attributes}}
+    <div class="attr-cell attr-{{key}}">
+      <span class="attr-abbrev">{{abbrev}}</span>
+      <span class="attr-value pdf-field" data-pdf-field="attr.{{key}}" data-pdf-align="center">{{value}}</span>
+    </div>
+    {{/each}}
+  </div>
+  <img class="attr-lily attr-lily-right" src="{{images.lilie}}" alt="" aria-hidden="true">
+</div>

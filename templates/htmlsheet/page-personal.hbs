@@ -1,0 +1,26 @@
+<div class="personal-layout">
+  <dl class="detail-grid sheet-block">
+    <div><dt>{{labels.name}}</dt><dd class="pdf-field" data-pdf-field="personal.name">{{snapshot.personal.name}}</dd></div>
+    <div><dt>{{labels.gender}}</dt><dd class="pdf-field" data-pdf-field="personal.gender">{{snapshot.personal.gender}}</dd></div>
+    <div><dt>{{labels.species}}</dt><dd class="pdf-field" data-pdf-field="personal.species">{{snapshot.personal.species}}</dd></div>
+    <div><dt>{{labels.culture}}</dt><dd class="pdf-field" data-pdf-field="personal.culture">{{snapshot.personal.culture}}</dd></div>
+    <div><dt>{{labels.career}}</dt><dd class="pdf-field" data-pdf-field="personal.career">{{snapshot.personal.career}}</dd></div>
+    <div><dt>{{labels.socialstatus}}</dt><dd class="pdf-field" data-pdf-field="personal.socialstatus">{{snapshot.personal.socialstatus}}</dd></div>
+    <div><dt>{{labels.home}}</dt><dd class="pdf-field" data-pdf-field="personal.home">{{snapshot.personal.home}}</dd></div>
+    <div><dt>{{labels.family}}</dt><dd class="pdf-field" data-pdf-field="personal.family">{{snapshot.personal.family}}</dd></div>
+    <div><dt>{{labels.age}}</dt><dd class="pdf-field" data-pdf-field="personal.age">{{snapshot.personal.age}}</dd></div>
+    <div><dt>{{labels.hair}}</dt><dd class="pdf-field" data-pdf-field="personal.hair">{{snapshot.personal.hair}}</dd></div>
+    <div><dt>{{labels.eyes}}</dt><dd class="pdf-field" data-pdf-field="personal.eyes">{{snapshot.personal.eyes}}</dd></div>
+    <div><dt>{{labels.height}}</dt><dd class="pdf-field" data-pdf-field="personal.height">{{snapshot.personal.height}}</dd></div>
+    <div><dt>{{labels.weight}}</dt><dd class="pdf-field" data-pdf-field="personal.weight">{{snapshot.personal.weight}}</dd></div>
+    <div class="span-2"><dt>{{labels.distinguishing}}</dt><dd class="pdf-field" data-pdf-field="personal.distinguishing" data-pdf-multiline="true">{{snapshot.personal.distinguishing}}</dd></div>
+  </dl>
+  <div class="portrait-box sheet-block">
+    {{#if snapshot.portrait}}
+    <img class="sheet-portrait" src="{{snapshot.portrait}}" alt="">
+    {{/if}}
+  </div>
+</div>
+{{> htmlsheet-attributes}}
+{{> htmlsheet-derived}}
+{{> htmlsheet-traits}}

@@ -1,0 +1,28 @@
+<table class="sheet-table sheet-table-spells" data-split>
+  <thead>
+    <tr>
+      <th class="col-name">{{labels.name}}</th>
+      <th>{{labels.check}}</th>
+      <th class="col-sr">{{labels.sr}}</th>
+      <th>{{labels.cost}}</th>
+      <th>{{labels.duration}}</th>
+      <th>{{labels.range}}</th>
+      <th class="col-effect">{{labels.effect}}</th>
+      <th class="col-ic">{{labels.ic}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each rows}}
+    <tr>
+      <td class="pdf-field" data-pdf-field="spell.{{@index}}.name">{{name}}</td>
+      <td class="pdf-field" data-pdf-field="spell.{{@index}}.check">{{check}}</td>
+      <td class="col-sr pdf-field" data-pdf-field="spell.{{@index}}.sr" data-pdf-align="center">{{sr}}</td>
+      <td class="pdf-field" data-pdf-field="spell.{{@index}}.cost">{{cost}}</td>
+      <td class="pdf-field" data-pdf-field="spell.{{@index}}.duration">{{castingTime}} / {{duration}}</td>
+      <td class="pdf-field" data-pdf-field="spell.{{@index}}.range">{{range}}</td>
+      <td class="col-effect pdf-field" data-pdf-field="spell.{{@index}}.effect">{{effect}}</td>
+      <td class="col-ic pdf-field" data-pdf-field="spell.{{@index}}.ic" data-pdf-align="center">{{ic}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -1,0 +1,103 @@
+export class Config {
+  // dest matches the printed talent row on the Ulisses simplified sheet (same order in DE and EN).
+  static TALENTS = [
+    { dest: 1, de: 'Fliegen', en: 'Flying' },
+    { dest: 2, de: 'Gaukeleien', en: 'Gaukelei' },
+    { dest: 3, de: 'Klettern', en: 'Climbing' },
+    { dest: 4, de: 'Körperbeherrschung', en: 'Body Control' },
+    { dest: 5, de: 'Kraftakt', en: 'Feat of Strength' },
+    { dest: 6, de: 'Reiten', en: 'Riding' },
+    { dest: 7, de: 'Schwimmen', en: 'Swimming' },
+    { dest: 8, de: 'Selbstbeherrschung', en: 'Self-Control' },
+    { dest: 9, de: 'Singen', en: 'Singing' },
+    { dest: 10, de: 'Sinnesschärfe', en: 'Perception' },
+    { dest: 11, de: 'Tanzen', en: 'Dancing' },
+    { dest: 12, de: 'Taschendiebstahl', en: 'Pickpocket' },
+    { dest: 13, de: 'Verbergen', en: 'Stealth' },
+    { dest: 14, de: 'Zechen', en: 'Carousing' },
+    { dest: 15, de: 'Bekehren & Überzeugen', en: 'Persuasion' },
+    { dest: 16, de: 'Betören', en: 'Seduction' },
+    { dest: 17, de: 'Einschüchtern', en: 'Intimidation' },
+    { dest: 18, de: 'Etikette', en: 'Etiquette' },
+    { dest: 19, de: 'Gassenwissen', en: 'Streetwise' },
+    { dest: 20, de: 'Menschenkenntnis', en: 'Empathy' },
+    { dest: 21, de: 'Überreden', en: 'Fast-Talk' },
+    { dest: 22, de: 'Verkleiden', en: 'Disguise' },
+    { dest: 23, de: 'Willenskraft', en: 'Willpower' },
+    { dest: 24, de: 'Fährtensuchen', en: 'Tracking' },
+    { dest: 25, de: 'Fesseln', en: 'Ropes' },
+    { dest: 26, de: 'Fischen & Angeln', en: 'Fishing' },
+    { dest: 27, de: 'Orientierung', en: 'Orienting' },
+    { dest: 28, de: 'Pflanzenkunde', en: 'Plant Lore' },
+    { dest: 29, de: 'Tierkunde', en: 'Animal Lore' },
+    { dest: 30, de: 'Wildnisleben', en: 'Survival' },
+    { dest: 31, de: 'Brett- & Glücksspiel', en: 'Gambling' },
+    { dest: 32, de: 'Geographie', en: 'Geography' },
+    { dest: 33, de: 'Geschichtswissen', en: 'History' },
+    { dest: 34, de: 'Götter & Kulte', en: 'Religions' },
+    { dest: 35, de: 'Kriegskunst', en: 'Warfare' },
+    { dest: 36, de: 'Magiekunde', en: 'Magical Lore' },
+    { dest: 37, de: 'Mechanik', en: 'Mechanics' },
+    { dest: 38, de: 'Rechnen', en: 'Math' },
+    { dest: 39, de: 'Rechtskunde', en: 'Law' },
+    { dest: 40, de: 'Sagen & Legenden', en: 'Myths & Legends' },
+    { dest: 41, de: 'Sphärenkunde', en: 'Sphere Lore' },
+    { dest: 42, de: 'Sternkunde', en: 'Astronomy' },
+    { dest: 43, de: 'Alchimie', en: 'Alchemy' },
+    { dest: 44, de: 'Boote & Schiffe', en: 'Sailing' },
+    { dest: 45, de: 'Fahrzeuge', en: 'Driving' },
+    { dest: 46, de: 'Handel', en: 'Commerce' },
+    { dest: 47, de: 'Heilkunde Gift', en: 'Treat Poison' },
+    { dest: 48, de: 'Heilkunde Krankheiten', en: 'Treat Disease' },
+    { dest: 49, de: 'Heilkunde Seele', en: 'Treat Soul' },
+    { dest: 50, de: 'Heilkunde Wunden', en: 'Treat Wounds' },
+    { dest: 51, de: 'Holzbearbeitung', en: 'Woodworking' },
+    { dest: 52, de: 'Lebensmittelbearbeitung', en: 'Prepare Food' },
+    { dest: 53, de: 'Lederbearbeitung', en: 'Leatherworking' },
+    { dest: 54, de: 'Malen & Zeichnen', en: 'Artistic Ability' },
+    { dest: 55, de: 'Metallbearbeitung', en: 'Metalworking' },
+    { dest: 56, de: 'Musizieren', en: 'Music' },
+    { dest: 57, de: 'Schlösserknacken', en: 'Pick Locks' },
+    { dest: 58, de: 'Steinbearbeitung', en: 'Earthencraft' },
+    { dest: 59, de: 'Stoffbearbeitung', en: 'Clothworking' },
+  ];
+
+  static COMBAT_SKILLS = [
+    { dest: 1, de: 'Armbrüste', en: 'Crossbows', hasParry: false },
+    { dest: 2, de: 'Bögen', en: 'Bows', hasParry: false },
+    { dest: 3, de: 'Dolche', en: 'Daggers', hasParry: true },
+    { dest: 4, de: 'Fechtwaffen', en: 'Fencing Weapons', hasParry: true },
+    { dest: 5, de: 'Hiebwaffen', en: 'Impact Weapons', hasParry: true },
+    { dest: 6, de: 'Kettenwaffen', en: 'Chain Weapons', hasParry: false },
+    { dest: 7, de: 'Lanzen', en: 'Lances', hasParry: true },
+    { dest: 8, de: 'Raufen', en: 'Brawling', hasParry: true },
+    { dest: 9, de: 'Schilde', en: 'Shields', hasParry: true },
+    { dest: 10, de: 'Schwerter', en: 'Swords', hasParry: true },
+    { dest: 11, de: 'Stangenwaffen', en: 'Polearms', hasParry: true },
+    { dest: 12, de: 'Wurfwaffen', en: 'Throwing Weapons', hasParry: false },
+    { dest: 13, de: 'Zweihandhiebwaffen', en: 'Two-Handed Impact Weapons', hasParry: true },
+    { dest: 14, de: 'Zweihandschwerter', en: 'Two-Handed Swords', hasParry: true },
+  ];
+
+  static COINS = [
+    { field: 'D', de: 'Dukaten', en: 'Ducat', i18n: 'Money-D' },
+    { field: 'S', de: 'Silber', en: 'Silverthaler', i18n: 'Money-S' },
+    { field: 'H', de: 'Heller', en: 'Haler', i18n: 'Money-H' },
+    { field: 'K', de: 'Kreuzer', en: 'Kreutzer', i18n: 'Money-K' },
+  ];
+
+  static CHARACTERISTIC_MAPPING = {
+    'MU_1': 'mu', 'KL_1': 'kl', 'IN_1': 'in', 'CH_1': 'ch',
+    'FF_1': 'ff', 'GE_1': 'ge', 'KO_1': 'ko', 'KK_1': 'kk'
+  };
+
+  static MAX_ITEMS = {
+    SHIELDS: 4,
+    ARMOR: 4,
+    RANGE_WEAPONS: 4,
+    MELEE_WEAPONS: 4,
+    SPELLS: 40,
+    LITURGY: 40,
+    INVENTORY: 72
+  };
+}

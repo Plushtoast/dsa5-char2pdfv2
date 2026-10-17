@@ -1,0 +1,34 @@
+{{#unless continuation}}
+<div class="purse-row sheet-block">
+  <span class="trait-label">{{labels.purse}}</span>
+  {{#each snapshot.coins}}
+  <span class="coin">{{name}} <span class="pdf-field" data-pdf-field="coin.{{@index}}">{{quantity}}</span></span>
+  {{/each}}
+</div>
+{{/unless}}
+<table class="sheet-table" data-split>
+  <thead>
+    <tr>
+      <th class="col-name">{{labels.name}}</th>
+      <th>{{labels.quantity}}</th>
+      <th>{{labels.weight}}</th>
+      <th>{{labels.location}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each rows}}
+    <tr>
+      <td class="pdf-field" data-pdf-field="item.{{@index}}.name">{{displayName}}</td>
+      <td class="pdf-field" data-pdf-field="item.{{@index}}.quantity" data-pdf-align="center">{{quantity}}</td>
+      <td class="pdf-field" data-pdf-field="item.{{@index}}.weight" data-pdf-align="center">{{weightTotal}}</td>
+      <td class="pdf-field" data-pdf-field="item.{{@index}}.location">{{location}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{#if isLast}}
+<p class="weight-footer sheet-block">
+  {{labels.weight}} <span class="pdf-field" data-pdf-field="inventory.weight">{{snapshot.weightTotal}}</span>
+  /&nbsp;{{labels.carrycapacity}} <span class="pdf-field" data-pdf-field="inventory.carry">{{snapshot.carryCapacity}}</span>
+</p>
+{{/if}}

@@ -14,22 +14,6 @@ async function editPdf() {
 
   const existingFields = form.getFields();
 
-  // (Optional) Store the appearances of existing fields
-  const fieldAppearances = {};
-  /*existingFields.forEach((field) => {
-    //if field has getFontSize() and getColor() methods
-
-    if (!field.getFontSize || !field.getColor) return;
-
-    fieldAppearances[field.getName()] = {
-      fontSize: field.getFontSize(),
-      color: field.getColor(),
-      // You can save other properties as needed
-    };
-  });*/
-
-  console.log(fieldAppearances)
-
   // Draw a rectangle with background color
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const defaultFields = ["Armbrüste", "Bögen", "Dolche", "Fechtwaffen", "Hiebwaffen", "Kettenwaffen", "Lanzen", "Raufen", "Schilde", "Schwerter", "Stangenwaffen", "Wurfwaffen", "Zweihandhiebwaffen", "Zweihandschwerter"];
