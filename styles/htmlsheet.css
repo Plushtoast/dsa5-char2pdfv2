@@ -204,8 +204,12 @@
   width: 16%;
 }
 
-#dsa5-htmlsheet .col-effect {
-  width: 22%;
+#dsa5-htmlsheet .spell-effect td {
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 #dsa5-htmlsheet .personal-layout {
@@ -595,4 +599,11 @@
   letter-spacing: 0 !important;
   text-transform: none !important;
   text-shadow: none !important;
+}
+
+/* Values live in the form widgets. The raster must not keep a second copy. */
+#dsa5-htmlsheet.pdf-capture [data-pdf-field],
+#dsa5-htmlsheet.pdf-capture [data-pdf-field] * {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
 }

@@ -57,6 +57,13 @@ export class DSACHAR2PDF {
     return additionalFilter ? filtered.filter(additionalFilter) : filtered;
   }
 
+  traditionName(kind) {
+    const matches = this.filterItems('specialability', (item) =>
+      item.system?.isTradition && item.system?.category?.value === kind,
+    );
+    return matches.length === 1 ? matches[0].name : '';
+  }
+
   isShieldSkill(skillName) {
     return isShield({ system: { combatskill: { value: skillName } } });
   }
@@ -522,7 +529,7 @@ export class DSACHAR2PDF {
       if (astralEnergy.max !== astralEnergy.value) {
         this.setTextField('AE_Aktuell', astralEnergy.value);
       }
-      this.setTextField('Held_Tradition_magisch', this.entity.system.tradition.magical);
+      this.setTextField('Held_Tradition_magisch', this.traditionName('magical'));
       this.setTextField('Leit_Magie_Ansicht', CharacterUtils.getLeitwertLong(this.entity.system.guidevalue.magical));
       this.setTextField('Held_Merkmale', CharacterUtils.getLeitwertLong(this.entity.system.feature.magical));
 
@@ -539,7 +546,7 @@ export class DSACHAR2PDF {
       if (karmaEnergy.max !== karmaEnergy.value) {
         this.setTextField('KE_Aktuell', karmaEnergy.value);
       }
-      this.setTextField('Held_Tradition_klerikal', this.entity.system.tradition.clerical);
+      this.setTextField('Held_Tradition_klerikal', this.traditionName('clerical'));
       this.setTextField('Leit_Karma_Anzeige', CharacterUtils.getLeitwertLong(this.entity.system.guidevalue.clerical));
       this.setTextField('Held_Aspekt', CharacterUtils.getLeitwertLong(this.entity.system.feature.clerical));
 

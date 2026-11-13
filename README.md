@@ -20,7 +20,7 @@ Two export modes:
 Language follows `game.i18n.lang`. There is no language dropdown.  
 
 ## Installation
-### Automatic Installtion
+### Automatic Installation
 See https://foundryvtt.wiki/en/basics/Modules. 
 
 1. Open the Add-on Modules tab in the Configuration and Setup dialog.
@@ -39,10 +39,9 @@ As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` f
 
 ## Where to find the button for export ? 
 
-![alt text](https://github.com/Plushtoast/dsa5-char2pdfv2/blob/main/Where_to_find_the_Button.png?raw=true)
+![alt text](https://github.com/Plushtoast/dsa5-char2pdfv2/blob/foundry14/Where_to_find_the_Button.png?raw=true)
 
-Please be aware. This context menu entry will only appear for actors which have been created with the template `DSA5.ActorSheetdsa5Character` and as `character` type. 
-Other templates and types are not recognized. 
+Please be aware. This context menu entry only appears for actors of type `character`. Other types are not recognized. 
 
 ## Used libraries
 - *FileSaver.js* ([FileSaver.js](https://github.com/eligrey/FileSaver.js)) by [eligrey](https://github.com/eligrey)

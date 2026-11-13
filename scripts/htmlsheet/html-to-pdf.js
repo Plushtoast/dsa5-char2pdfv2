@@ -1,10 +1,33 @@
 import { PAGE } from '../config/print.js';
 import { dsa5char2pdf } from '../shared/module.js';
-import { ImageConverter } from '../shared/image.js';
+import { ImageConverter, releaseCanvas } from '../shared/image.js';
 import { savePdfBlob } from '../shared/download.js';
 import { imageUrls } from './render-sheet.js';
 import { paginateSheet } from './paginate.js';
-import { addPdfFields, collectPdfFields, finishPdfForm } from './pdf-fields.js';
+import { addPdfFields, collectPdfFields, finishPdfForm, hidePdfFieldText } from './pdf-fields.js';
+
+const CAPTURE_ROOTS = '#dsa5-htmlsheet-host, .html2pdf__overlay';
+
+/**
+ * html2canvas clones `documentElement` and calls getComputedStyle on every node.
+ * Keep the sheet (and the html2pdf overlay that holds the page being rasterized)
+ * plus stylesheets. Skip the rest of the Foundry UI so repeated exports do not
+ * clone the live world into an iframe on every page.
+ */
+export function ignoreCaptureElement(el) {
+  if (!el || el.nodeType !== 1) return false;
+  const tag = el.tagName;
+  if (tag === 'IFRAME' || tag === 'SCRIPT') return true;
+  if (tag === 'HTML' || tag === 'HEAD' || tag === 'BODY' || tag === 'STYLE' || tag === 'LINK') return false;
+  if (typeof el.closest === 'function' && el.closest(CAPTURE_ROOTS)) return false;
+  const host = el.ownerDocument?.getElementById?.('dsa5-htmlsheet-host');
+  if (host && typeof el.contains === 'function' && el.contains(host)) return false;
+  return true;
+}
+
+export function removeCaptureLeftovers(doc = document) {
+  doc.querySelectorAll('.html2pdf__overlay, iframe.html2canvas-container').forEach((node) => node.remove());
+}
 
 async function toDataUrlSafe(src, format = 'image/png') {
   if (!src || src.startsWith('data:')) return src;
@@ -64,7 +87,23 @@ async function ensureHtml2Pdf() {
   return globalThis.html2pdf;
 }
 
-function canvasFromWorker(html2pdf, page, theme) {
+function prepareClonedSheets(doc) {
+  for (const sheet of doc.querySelectorAll('#dsa5-htmlsheet')) {
+    sheet.classList.add('pdf-capture');
+    sheet.style.left = '0';
+    sheet.style.position = 'relative';
+    for (const el of sheet.querySelectorAll('*')) {
+      el.style.letterSpacing = '0';
+      el.style.textShadow = 'none';
+      el.style.webkitTextStroke = '0';
+      el.style.textTransform = 'none';
+      el.style.filter = 'none';
+    }
+    hidePdfFieldText(sheet);
+  }
+}
+
+function canvasFromWorker(html2pdf, source, theme) {
   const backgroundColor = theme === 'print' ? '#ffffff' : '#f4ead2';
   return new Promise((resolve, reject) => {
     html2pdf()
@@ -75,6 +114,9 @@ function canvasFromWorker(html2pdf, page, theme) {
           useCORS: true,
           allowTaint: true,
           logging: false,
+          // The bundled loader keeps each page's decoded images alive until this
+          // timer fires, even after the canvas is done. Assets are already data URLs.
+          imageTimeout: 0,
           backgroundColor,
           width: PAGE.widthPx,
           height: PAGE.heightPx,
@@ -84,34 +126,26 @@ function canvasFromWorker(html2pdf, page, theme) {
           scrollY: 0,
           x: 0,
           y: 0,
-          onclone(doc) {
-            const sheet = doc.querySelector('#dsa5-htmlsheet');
-            if (!sheet) return;
-            sheet.classList.add('pdf-capture');
-            sheet.style.left = '0';
-            sheet.style.position = 'relative';
-            for (const el of sheet.querySelectorAll('*')) {
-              el.style.letterSpacing = '0';
-              el.style.textShadow = 'none';
-              el.style.webkitTextStroke = '0';
-              el.style.textTransform = 'none';
-              el.style.filter = 'none';
-            }
-          },
+          ignoreElements: ignoreCaptureElement,
+          onclone: prepareClonedSheets,
         },
         pagebreak: { mode: [] },
       })
-      .from(page)
+      .from(source)
       .toCanvas()
       .get('canvas', resolve)
       .catch(reject);
-  });
+  }).finally(() => removeCaptureLeftovers());
 }
 
 async function canvasToJpg(canvas) {
-  const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));
-  if (!blob) throw new Error('Could not encode sheet page');
-  return new Uint8Array(await blob.arrayBuffer());
+  try {
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));
+    if (!blob) throw new Error('Could not encode sheet page');
+    return new Uint8Array(await blob.arrayBuffer());
+  } finally {
+    releaseCanvas(canvas);
+  }
 }
 
 function isolatePage(root, page) {
@@ -180,6 +214,9 @@ export async function htmlToPdf(html, filename, options = {}) {
     const bytes = await pdf.save({ updateFieldAppearances: false });
     savePdfBlob(new Blob([bytes], { type: 'application/pdf' }), filename);
   } finally {
+    host.querySelectorAll('img').forEach((img) => img.removeAttribute('src'));
+    host.replaceChildren();
     host.remove();
+    removeCaptureLeftovers();
   }
 }

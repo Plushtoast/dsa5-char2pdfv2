@@ -1,4 +1,4 @@
-import { CharacterUtils } from './locale.js';
+import { CharacterUtils, plainText } from './locale.js';
 import { RomanNumerals } from './roman.js';
 import { Config } from '../ulisses/field-map.js';
 import { SHEET_PAGES } from '../config/sheet-pages.js';
@@ -115,12 +115,12 @@ export class ActorSnapshot {
 
   loc(key) {
     const translated = this.localizeFn(key);
-    return translated == null || translated === '' ? key : translated;
+    return plainText(translated == null || translated === '' ? key : translated);
   }
 
   abbrev(code) {
     if (!code) return '';
-    const raw = String(code);
+    const raw = plainText(code);
     if (raw.includes('/')) {
       return raw.split('/').map((part) => this.abbrev(part.trim())).join('/');
     }
@@ -181,7 +181,7 @@ export class ActorSnapshot {
       blessings: this.filterType('blessing').map((item) => item.name),
       clericalAbilities: this.#specials('clerical'),
       clerical: {
-        tradition: text(system.tradition?.clerical),
+        tradition: this.#traditionName('clerical'),
         aspect: this.leitwert(system.feature?.clerical),
         guidevalue: this.leitwert(system.guidevalue?.clerical),
       },
@@ -189,7 +189,7 @@ export class ActorSnapshot {
       cantrips: this.filterType('magictrick').map((item) => item.name),
       magicalAbilities: this.#specials('magical'),
       magical: {
-        tradition: text(system.tradition?.magical),
+        tradition: this.#traditionName('magical'),
         feature: this.leitwert(system.feature?.magical),
         guidevalue: this.leitwert(system.guidevalue?.magical),
       },
@@ -330,6 +330,15 @@ export class ActorSnapshot {
 
   #namedList(type, extra = null) {
     return this.filterType(type, extra).map((item) => this.withStep(item.name, item.system?.step?.value));
+  }
+
+  #traditionName(kind) {
+    const matches = itemsOf(this.actor).filter((item) =>
+      item.type === 'specialability' &&
+      item.system?.isTradition &&
+      item.system?.category?.value === kind,
+    );
+    return matches.length === 1 ? text(matches[0].name) : '';
   }
 
   #specials(category) {
@@ -557,7 +566,7 @@ export class ActorSnapshot {
         duration: text(item.system?.duration?.value),
         castingTime: text(item.system?.castingTime?.value),
         range: text(item.system?.range?.value),
-        effect: text(item.system?.effect?.value),
+        effect: plainText(text(item.system?.effect?.value)),
         ic: text(item.system?.StF?.value),
         feature: text(item.system?.feature || item.system?.distribution?.value),
       };

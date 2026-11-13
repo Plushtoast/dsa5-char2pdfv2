@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "node test/locale-map.test.js && node test/pdf-labels.test.js && node test/templates.test.js && node test/actor-snapshot.test.mjs && node test/sheet-pages.test.mjs && node test/htmlsheet-render.test.mjs && node test/pdf-fields.test.mjs",
+    "test": "node test/locale-map.test.js && node test/pdf-labels.test.js && node test/templates.test.js && node test/actor-snapshot.test.mjs && node test/sheet-pages.test.mjs && node test/htmlsheet-render.test.mjs && node test/pdf-fields.test.mjs && node test/capture-memory.test.mjs",
     "build:templates": "node modifytemplate.js"
   },
   "dependencies": {

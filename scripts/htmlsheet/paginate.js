@@ -40,7 +40,8 @@ function splitTable(page, table) {
   const rows = [...(table.tBodies[0]?.rows || [])];
   if (rows.length < 2) return false;
   const limit = contentBottom(page);
-  const firstOverflow = rows.findIndex((row) => row.getBoundingClientRect().bottom > limit);
+  let firstOverflow = rows.findIndex((row) => row.getBoundingClientRect().bottom > limit);
+  if (rows[firstOverflow]?.classList.contains('spell-effect') && firstOverflow > 1) firstOverflow -= 1;
   if (firstOverflow <= 0) return false;
 
   const next = cloneEmptyPage(page);

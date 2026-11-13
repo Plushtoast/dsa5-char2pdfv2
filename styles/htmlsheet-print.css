@@ -3,9 +3,10 @@
   background: #fff;
   --sheet-text: #111;
   --sheet-muted: #333;
-  --sheet-rule: #222;
-  --sheet-fill: #fff;
-  --sheet-head: #eee;
+  --sheet-rule: transparent;
+  --sheet-fill: transparent;
+  --sheet-head: transparent;
+  --attr-color: #111;
 }
 
 #dsa5-htmlsheet[data-theme="print"] .sheet-page {
@@ -14,7 +15,8 @@
 
 #dsa5-htmlsheet[data-theme="print"] .sheet-page-bg-img,
 #dsa5-htmlsheet[data-theme="print"] .sheet-zierleiste,
-#dsa5-htmlsheet[data-theme="print"] .attr-lily {
+#dsa5-htmlsheet[data-theme="print"] .attr-lily,
+#dsa5-htmlsheet[data-theme="print"] .sheet-logo {
   display: none;
 }
 
@@ -22,29 +24,28 @@
   padding: 28px 32px 24px;
 }
 
-#dsa5-htmlsheet[data-theme="print"] .attr-bar {
-  height: 78px;
-  border: 1px solid #111;
-  padding: 0 8px;
-}
-
-#dsa5-htmlsheet[data-theme="print"] .attr-cell {
-  --attr-color: #111;
-}
-
+#dsa5-htmlsheet[data-theme="print"] .sheet-table,
+#dsa5-htmlsheet[data-theme="print"] .sheet-table th,
+#dsa5-htmlsheet[data-theme="print"] .sheet-table td,
+#dsa5-htmlsheet[data-theme="print"] .detail-grid,
+#dsa5-htmlsheet[data-theme="print"] .detail-grid > div,
+#dsa5-htmlsheet[data-theme="print"] .portrait-box,
+#dsa5-htmlsheet[data-theme="print"] .attr-bar,
 #dsa5-htmlsheet[data-theme="print"] .attr-abbrev,
-#dsa5-htmlsheet[data-theme="print"] .attr-value {
-  border-color: #111;
-}
-
-#dsa5-htmlsheet[data-theme="print"] .derived-cell.is-lp,
-#dsa5-htmlsheet[data-theme="print"] .derived-cell.is-ae,
-#dsa5-htmlsheet[data-theme="print"] .derived-cell.is-kp {
-  background: #fff;
-}
-
-#dsa5-htmlsheet[data-theme="print"] .cond-level {
-  border-color: #111;
+#dsa5-htmlsheet[data-theme="print"] .attr-value,
+#dsa5-htmlsheet[data-theme="print"] .derived-grid,
+#dsa5-htmlsheet[data-theme="print"] .derived-cell,
+#dsa5-htmlsheet[data-theme="print"] .meta-grid,
+#dsa5-htmlsheet[data-theme="print"] .meta-grid > div,
+#dsa5-htmlsheet[data-theme="print"] .magic-meta,
+#dsa5-htmlsheet[data-theme="print"] .magic-meta > div,
+#dsa5-htmlsheet[data-theme="print"] .trait-line,
+#dsa5-htmlsheet[data-theme="print"] .notes-prose,
+#dsa5-htmlsheet[data-theme="print"] .cond-level,
+#dsa5-htmlsheet[data-theme="print"] h2 {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 @media print {

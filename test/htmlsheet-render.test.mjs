@@ -8,6 +8,8 @@ import { renderSheet } from '../scripts/htmlsheet/render-sheet.js';
 import { buildActorSnapshot } from '../scripts/shared/actor-snapshot.js';
 import { fatActor, mundaneActor, localize } from './actor-fixtures.mjs';
 import { THEMES } from '../scripts/config/print.js';
+import { plainText } from '../scripts/shared/locale.js';
+import { buildChromeLabels } from '../scripts/htmlsheet/labels.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -72,5 +74,15 @@ assert(html.includes('data-split-prose'));
 assert(html.includes('col-check">Check</th>'));
 assert(html.includes('>SR</th>'));
 assert(html.includes('sheet-zierleiste'));
+assert(html.includes('class="spell-effect"'));
+assert(html.includes('colspan="7"'));
+assert(!html.includes('col-effect'));
+assert(!html.includes('data-pdf-field="item.0.location"'));
+assert.strictEqual(plainText('Leit&shy;eigenschaft'), 'Leiteigenschaft');
+assert.strictEqual(plainText('GE&#47;KK'), 'GE/KK');
+assert.strictEqual(plainText('A&amp;shy;B'), 'AB');
+globalThis._loc = (key) => (key === 'guidevalue_small' ? 'Leit&shy;eigenschaft' : key);
+assert.strictEqual(buildChromeLabels().attr, 'Leiteigenschaft');
+delete globalThis._loc;
 
 console.log('htmlsheet-render.test.mjs passed');

@@ -55,6 +55,47 @@ function winAnsi(value) {
   return String(value || '').replace(/[^\t\n\r\x20-\xFF]/g, '?');
 }
 
+function textForFont(font, value) {
+  const clipped = String(value || '').slice(0, 8000);
+  if (!clipped) return '';
+  try {
+    font?.encodeText?.(clipped);
+    return clipped;
+  } catch (_error) {
+    return winAnsi(clipped);
+  }
+}
+
+function blankTextPaint(el) {
+  el.style.color = 'transparent';
+  el.style.webkitTextFillColor = 'transparent';
+}
+
+/** Hide field text in the capture clone without changing the box. The widget draws the value. */
+export function hidePdfFieldText(root) {
+  for (const field of root.querySelectorAll('[data-pdf-field]')) {
+    blankTextPaint(field);
+    for (const child of field.querySelectorAll('*')) blankTextPaint(child);
+  }
+}
+
+function drawFieldAppearance(field, font) {
+  try {
+    field.defaultUpdateAppearances(font);
+  } catch (_error) {
+    if (typeof field.setText !== 'function' || typeof field.getText !== 'function') {
+      console.warn('char2pdf could not draw field', field.getName?.(), _error);
+      return;
+    }
+    field.setText(winAnsi(field.getText()));
+    try {
+      field.defaultUpdateAppearances(font);
+    } catch (error) {
+      console.warn('char2pdf could not draw field', field.getName?.(), error);
+    }
+  }
+}
+
 /** Match the 12px sheet body (~9pt). Never larger than the widget; never auto-fit to a tall box. */
 export function fieldFontSize(field, box) {
   const preferred = field.multiline ? 8 : 9;
@@ -112,10 +153,10 @@ export function addPdfFields(pdf, pdfPage, fields, options = {}) {
       if (field.dropdown.length) {
         const dropdown = form.createDropdown(name);
         dropdown.setOptions(field.dropdown);
-        applyFontSize(dropdown, fontSize);
-        dropdown.addToPage(pdfPage, widget);
         const selected = field.dropdown.includes(field.value) ? field.value : field.dropdown[0];
         if (selected) dropdown.select(selected);
+        dropdown.addToPage(pdfPage, widget);
+        applyFontSize(dropdown, fontSize);
         continue;
       }
 
@@ -124,17 +165,10 @@ export function addPdfFields(pdf, pdfPage, fields, options = {}) {
         textField.enableMultiline();
         textField.enableScrolling();
       }
+      if (field.value) textField.setText(textForFont(font, field.value));
+      textField.addToPage(pdfPage, widget);
       textField.setAlignment(alignmentValue(field.align));
       applyFontSize(textField, fontSize);
-      textField.addToPage(pdfPage, widget);
-      if (field.value) {
-        const clipped = field.value.slice(0, 8000);
-        try {
-          textField.setText(clipped);
-        } catch (_error) {
-          textField.setText(winAnsi(clipped));
-        }
-      }
     } catch (error) {
       console.warn('char2pdf could not add field', field.name, error);
     }
@@ -142,6 +176,6 @@ export function addPdfFields(pdf, pdfPage, fields, options = {}) {
   return serial;
 }
 
-export function finishPdfForm(_pdf, _font) {
-  /* Keep widget appearances empty so the rasterized sheet is the visible text. */
+export function finishPdfForm(pdf, font) {
+  for (const field of pdf.getForm().getFields()) drawFieldAppearance(field, font);
 }

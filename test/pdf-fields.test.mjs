@@ -1,5 +1,9 @@
 import assert from 'assert';
-import { collectPdfFields, fieldFontSize, htmlRectToPdf } from '../scripts/htmlsheet/pdf-fields.js';
+import { createRequire } from 'module';
+import { collectPdfFields, fieldFontSize, finishPdfForm, hidePdfFieldText, htmlRectToPdf } from '../scripts/htmlsheet/pdf-fields.js';
+
+const require = createRequire(import.meta.url);
+const { PDFDocument, StandardFonts, rgb } = require('../lib/pdf-lib.js');
 
 const pagePx = { width: 794, height: 1123 };
 const pagePt = { width: 595.28, height: 841.89 };
@@ -42,5 +46,51 @@ assert.strictEqual(fieldFontSize({ multiline: true }, { height: 80 }), 8);
 assert.ok(fieldFontSize({ multiline: true }, { height: 12 }) <= 8);
 assert.ok(fieldFontSize({ multiline: true }, { height: 12 }) <= 8);
 assert.strictEqual(fieldFontSize({ multiline: false }, { height: 12 }), 8);
+
+const child = { style: {} };
+const fieldEl = {
+  style: {},
+  querySelectorAll() { return [child]; },
+};
+hidePdfFieldText({
+  querySelectorAll(selector) {
+    return selector === '[data-pdf-field]' ? [fieldEl] : [];
+  },
+});
+assert.strictEqual(fieldEl.style.color, 'transparent');
+assert.strictEqual(child.style.color, 'transparent');
+assert.strictEqual(child.style.webkitTextFillColor, 'transparent');
+
+const pdf = await PDFDocument.create();
+const font = await pdf.embedFont(StandardFonts.Helvetica);
+const pdfPage = pdf.addPage([200, 80]);
+const widget = {
+  borderWidth: 0,
+  font,
+  textColor: rgb(0, 0, 0),
+  backgroundColor: undefined,
+  borderColor: undefined,
+};
+const form = pdf.getForm();
+const name = form.createTextField('s1.personal_name');
+name.addToPage(pdfPage, { ...widget, x: 10, y: 40, width: 120, height: 16 });
+name.setFontSize(9);
+name.setText('Alrik the Bold');
+const weird = form.createTextField('s2.notes');
+weird.addToPage(pdfPage, { ...widget, x: 10, y: 10, width: 120, height: 16 });
+weird.setFontSize(9);
+weird.setText('Weg \u2603');
+finishPdfForm(pdf, font);
+
+function appearanceText(field) {
+  const normal = field.acroField.getWidgets()[0].getAppearances()?.normal;
+  const stream = typeof normal?.getContentsString === 'function' ? normal : pdf.context.lookup(normal);
+  return stream.getContentsString();
+}
+
+assert(appearanceText(name).includes('416C72696B2074686520426F6C64'), 'edited value must be in the field appearance');
+assert.strictEqual(weird.getText(), 'Weg ?');
+assert(appearanceText(weird).includes('576567203F'));
+assert(!appearanceText(weird).includes('2603'));
 
 console.log('pdf-fields.test.mjs passed');

@@ -1,4 +1,6 @@
-const _loc = (key) => (typeof globalThis._loc === 'function' ? globalThis._loc(key) : key);
+import { plainText } from '../shared/locale.js';
+
+const _loc = (key) => plainText(typeof globalThis._loc === 'function' ? globalThis._loc(key) : key);
 
 export function buildChromeLabels() {
   return {
@@ -46,7 +48,6 @@ export function buildChromeLabels() {
     structure: _loc('structure'),
     inventory: _loc('TYPES.Item.equipment'),
     quantity: _loc('quantity'),
-    location: _loc('dsa5-char2pdfv2.location'),
     carrycapacity: _loc('carrycapacity'),
     purse: _loc('purse'),
     liturgies: _loc('liturgies'),
